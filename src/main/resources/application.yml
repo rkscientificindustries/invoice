@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: invoice
+  datasource:
+    url: jdbc:postgresql://localhost:5433/invoice_db
+    username: user
+    password: secret
+  sql:
+    init:
+      mode: always
+vaadin:
+  launch-browser: false
