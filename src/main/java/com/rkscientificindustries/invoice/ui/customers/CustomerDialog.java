@@ -96,9 +96,8 @@ public class CustomerDialog extends Dialog {
 
     var updateBtn = new Button("Update", event -> {
       if (binder.writeBeanIfValid(customer)) {
-        var savedCustomer = customerService.save(customer);
         close();
-        onSaved.accept(savedCustomer);
+        onSaved.accept(customerService.save(customer));
       }
     });
     updateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

@@ -30,17 +30,7 @@ public class CustomerService {
 
   @Transactional(readOnly = true)
   public List<Customer> findAll() {
-    return customerRepository.findAll();
-  }
-
-  @Transactional(readOnly = true)
-  public Optional<Customer> findById(Long id) {
-    return customerRepository.findById(id);
-  }
-
-  @Transactional(readOnly = true)
-  public List<Customer> searchByName(String name) {
-    return customerRepository.findByNameContainingIgnoreCase(name);
+    return customerRepository.findAllByOrderByIdAsc();
   }
 
   public void deleteById(Long id) {

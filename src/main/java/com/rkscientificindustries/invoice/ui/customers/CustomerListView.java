@@ -20,6 +20,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -29,10 +30,11 @@ public class CustomerListView extends MasterDetailLayout {
   private final Grid<Customer> grid = new Grid<>(Customer.class, false);
   private final CustomerService customerService;
   private final CustomerDialog detailsDialog;
+  private ListDataProvider<Customer> dataProvider;
 
   public CustomerListView(CustomerService customerService) {
     this.customerService = customerService;
-    this.detailsDialog = new CustomerDialog(customerService, this::refreshGrid);
+    this.detailsDialog = new CustomerDialog(customerService, this::addCustomer);
 
     setSizeFull();
 
@@ -54,7 +56,8 @@ public class CustomerListView extends MasterDetailLayout {
     setDetail(null);
 
     configureGrid();
-    loadCustomers();
+    dataProvider = new ListDataProvider<>(customerService.findAll());
+    grid.setDataProvider(dataProvider);
 
     // Configure master-detail behavior
     setMasterMinSize("400px");
@@ -82,11 +85,11 @@ public class CustomerListView extends MasterDetailLayout {
   }
 
   private void configureGrid() {
-    configureColumns();
-    configureInteractions();
+    configureGridColumns();
+    configureGridInteractions();
   }
 
-  private void configureColumns() {
+  private void configureGridColumns() {
     grid.addColumn(Customer::getId)
             .setHeader("ID")
             .setFlexGrow(0)
@@ -105,32 +108,20 @@ public class CustomerListView extends MasterDetailLayout {
             .setTextAlign(com.vaadin.flow.component.grid.ColumnTextAlign.END);
   }
 
-  private void configureInteractions() {
-    grid.addItemClickListener(event -> showCustomerDetail(event.getItem()));
+  private void configureGridInteractions() {
+    grid.addItemClickListener(clickEvent -> {
+      grid.asSingleSelect().setValue(clickEvent.getItem());
+      setDetail(createDetailContent(clickEvent.getItem()));
+    });
 
     grid.addCellFocusListener(event ->
             event.getItem().ifPresent(customer -> grid.asSingleSelect().setValue(customer)));
-
     Shortcuts.addShortcutListener(grid,
             e -> {
               var selected = grid.asSingleSelect().getValue();
-              if (selected != null) {
-                showCustomerDetail(selected);
-              }
+              setDetail(createDetailContent(selected));
             },
             Key.ENTER);
-  }
-
-  private void showCustomerDetail(Customer customer) {
-    if (customer == null) {
-      closeDetail();
-      return;
-    }
-
-    grid.asSingleSelect().setValue(customer);
-
-    var detailContent = createDetailContent(customer);
-    setDetail(detailContent);
   }
 
   private VerticalLayout createDetailContent(Customer customer) {
@@ -166,48 +157,27 @@ public class CustomerListView extends MasterDetailLayout {
 
     var editBtn = new Button("Edit", new Icon(VaadinIcon.EDIT), e -> {
       var dialog = new CustomerDialog(customerService, c -> {
+        updateCustomer(c);
         Notification.show("Customer updated").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        updateCustomerInGrid(c);
-        showCustomerDetail(c);
       });
       dialog.openUpdateForm(customer);
     });
     editBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
 
-    var deleteBtn = new Button("Delete", new Icon(VaadinIcon.TRASH), e -> confirmAndDeleteCustomer(customer));
+    var deleteBtn = new Button("Delete", new Icon(VaadinIcon.TRASH), e -> {
+      var confirmDialog = new ConfirmDialog();
+      confirmDialog.setHeader("Delete Customer?");
+      confirmDialog.setText("Are you sure you want to delete '" + customer.getName() + "' ?");
+      confirmDialog.setCancelable(true);
+      confirmDialog.setConfirmText("Delete");
+      confirmDialog.setConfirmButtonTheme("error primary");
+      confirmDialog.addConfirmListener(confirmEvent -> deleteCustomer(customer));
+      confirmDialog.open();
+    });
     deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
 
     header.add(customerName, editBtn, deleteBtn);
     return header;
-  }
-
-  private void confirmAndDeleteCustomer(Customer customer) {
-    var confirmDialog = new ConfirmDialog();
-    confirmDialog.setHeader("Delete Customer?");
-    confirmDialog.setText("Are you sure you want to delete '" + customer.getName() + "' ?");
-
-    confirmDialog.setCancelable(true);
-    confirmDialog.setConfirmText("Delete");
-    confirmDialog.setConfirmButtonTheme("error primary");
-
-    confirmDialog.addConfirmListener(event -> {
-      try {
-        customerService.deleteById(customer.getId());
-
-        var notification = Notification.show("Customer deleted successfully");
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        notification.setPosition(Notification.Position.BOTTOM_CENTER);
-
-        closeDetail();
-        loadCustomers();
-      } catch (Exception ex) {
-        var notification = Notification.show("Failed to delete customer: " + ex.getMessage());
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        notification.setDuration(5000);
-      }
-    });
-
-    confirmDialog.open();
   }
 
   private Card createBasicInfoCard(Customer customer) {
@@ -307,21 +277,39 @@ public class CustomerListView extends MasterDetailLayout {
     return row;
   }
 
+  private void addCustomer(Customer customer) {
+    if (!dataProvider.getItems().contains(customer)) {
+      dataProvider.getItems().add(customer);
+      dataProvider.refreshAll();
+    }
+  }
+
+  private void updateCustomer(Customer updated) {
+    dataProvider.refreshAll();
+    setDetail(createDetailContent(updated));
+  }
+
+  private void deleteCustomer(Customer customer) {
+    try {
+      customerService.deleteById(customer.getId());
+
+      var notification = Notification.show("Customer deleted successfully");
+      notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+
+      dataProvider.getItems().remove(customer);
+      dataProvider.refreshAll();
+      closeDetail();
+    } catch (Exception ex) {
+      var notification = Notification.show("Failed to delete customer: " + ex.getMessage());
+      notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+      notification.setDuration(5000);
+    }
+  }
+
   private void closeDetail() {
     setDetail(null);
     grid.asSingleSelect().clear();
-  }
-
-  private void updateCustomerInGrid(Customer customer) {
-    grid.getListDataView().refreshItem(customer);
-  }
-
-  private void loadCustomers() {
-    grid.setItems(customerService.findAll());
-  }
-
-  private void refreshGrid(Customer customer) {
-    grid.getListDataView().addItem(customer);
   }
 
   private String nullSafe(String s) {
