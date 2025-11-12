@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
@@ -90,22 +91,24 @@ public class CustomerListView extends MasterDetailLayout {
   }
 
   private void configureGridColumns() {
-    grid.addColumn(Customer::getId)
-            .setHeader("ID")
+    grid.addComponentColumn(customer -> {
+              int index = dataProvider.getItems().stream()
+                      .toList()
+                      .indexOf(customer) + 1;
+              return new Span(String.valueOf(index));
+            })
+            .setHeader("#")
             .setFlexGrow(0)
-            .setWidth("80px")
-            .setSortable(true);
+            .setWidth("32px");
 
     grid.addColumn(Customer::getName)
             .setHeader("Name")
-            .setAutoWidth(true)
-            .setSortable(true);
+            .setAutoWidth(true);
 
     grid.addColumn(Customer::getGstin)
             .setHeader("GSTIN")
             .setAutoWidth(true)
-            .setFlexGrow(1)
-            .setTextAlign(com.vaadin.flow.component.grid.ColumnTextAlign.END);
+            .setTextAlign(ColumnTextAlign.END);
   }
 
   private void configureGridInteractions() {
