@@ -98,24 +98,24 @@ public class MockDataLoader {
   }
 
   private Customer generateMockCustomer(int index) {
-    CustomerType type = random.nextBoolean() ? CustomerType.BUSINESS : CustomerType.INDIVIDUAL;
-    String name = type == CustomerType.BUSINESS ?
+    var type = random.nextBoolean() ? CustomerType.BUSINESS : CustomerType.INDIVIDUAL;
+    var name = type == CustomerType.BUSINESS ?
             COMPANY_NAMES[index % COMPANY_NAMES.length] + " " + (index / COMPANY_NAMES.length + 1) :
             INDIVIDUAL_NAMES[index % INDIVIDUAL_NAMES.length] + " " + (index / INDIVIDUAL_NAMES.length + 1);
 
-    String email = generateEmail(name);
-    String phone = generatePhone();
-    String gstin = generateGSTIN(index);
-    String street = (index + 1) + ", " + STREETS[index % STREETS.length];
-    String city = CITIES[index % CITIES.length];
-    State state = getStateForCity(city);
-    String postalCode = generatePostalCode();
+    var email = generateEmail(name);
+    var phone = generatePhone();
+    var gstin = generateGSTIN(index);
+    var street = (index + 1) + ", " + STREETS[index % STREETS.length];
+    var city = CITIES[index % CITIES.length];
+    var state = getStateForCity(city);
+    var postalCode = generatePostalCode();
 
     return Customer.of(name, email, phone, type, gstin, street, city, state, postalCode);
   }
 
   private String generateEmail(String name) {
-    String emailName = name.toLowerCase()
+    var emailName = name.toLowerCase()
             .replaceAll("[^a-z0-9\\s]", "")
             .replaceAll("\\s+", ".");
     return emailName + "@example.com";

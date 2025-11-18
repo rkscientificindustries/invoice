@@ -3,6 +3,7 @@ package com.rkscientificindustries.invoice.ui.customers;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
+import com.rkscientificindustries.invoice.ui.utils.FabButton;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.button.Button;
@@ -31,7 +32,7 @@ public class CustomerListView extends MasterDetailLayout {
   private final Grid<Customer> grid = new Grid<>(Customer.class, false);
   private final CustomerService customerService;
   private final CustomerDialog detailsDialog;
-  private ListDataProvider<Customer> dataProvider;
+  private final ListDataProvider<Customer> dataProvider;
 
   public CustomerListView(CustomerService customerService) {
     this.customerService = customerService;
@@ -39,17 +40,18 @@ public class CustomerListView extends MasterDetailLayout {
 
     setSizeFull();
 
-    // Create master area with grid and toolbar
+    // Create master area with grid
     var masterContent = new VerticalLayout();
     masterContent.setSizeFull();
     masterContent.setPadding(false);
     masterContent.setSpacing(false);
 
-    masterContent.add(createToolbar());
-
     grid.setSizeFull();
     masterContent.add(grid);
     masterContent.setFlexGrow(1, grid);
+
+    var addCustomerBtn = FabButton.create("Add Customer", e -> detailsDialog.openEmptyForm());
+    masterContent.add(addCustomerBtn);
 
     setMaster(masterContent);
 
@@ -69,22 +71,6 @@ public class CustomerListView extends MasterDetailLayout {
     addDetailEscapePressListener(event -> closeDetail());
   }
 
-  private HorizontalLayout createToolbar() {
-    var addCustomerBtn = new Button("Add Customer", e -> detailsDialog.openEmptyForm());
-    addCustomerBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-    var toolbar = new HorizontalLayout(addCustomerBtn);
-    toolbar.setWidthFull();
-    toolbar.setJustifyContentMode(HorizontalLayout.JustifyContentMode.END);
-    toolbar.setPadding(true);
-    toolbar.getStyle()
-            .set("flex-shrink", "0")
-            .set("background-color", "var(--lumo-base-color)")
-            .set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)")
-            .set("z-index", "1");
-    return toolbar;
-  }
-
   private void configureGrid() {
     configureGridColumns();
     configureGridInteractions();
@@ -99,7 +85,7 @@ public class CustomerListView extends MasterDetailLayout {
             })
             .setHeader("#")
             .setFlexGrow(0)
-            .setWidth("32px");
+            .setWidth("64px");
 
     grid.addColumn(Customer::getName)
             .setHeader("Name")
@@ -296,9 +282,7 @@ public class CustomerListView extends MasterDetailLayout {
     try {
       customerService.deleteById(customer.getId());
 
-      var notification = Notification.show("Customer deleted successfully");
-      notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      Notification.show("Customer deleted successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
       dataProvider.getItems().remove(customer);
       dataProvider.refreshAll();

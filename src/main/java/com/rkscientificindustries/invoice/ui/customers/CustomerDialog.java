@@ -5,7 +5,6 @@ import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.backend.customer.CustomerType;
 import com.rkscientificindustries.invoice.backend.utils.State;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -66,9 +65,7 @@ public class CustomerDialog extends Dialog {
     var saveBtn = new Button("Save", event -> {
       if (binder.writeBeanIfValid(customer)) {
         close();
-        var notification = Notification.show("Customer created successfully");
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        notification.setPosition(Notification.Position.BOTTOM_CENTER);
+        Notification.show("Customer created successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         onSaved.accept(customerService.save(customer));
       }
     });
@@ -90,7 +87,6 @@ public class CustomerDialog extends Dialog {
     getFooter().removeAll();
     setHeaderTitle("Edit Customer");
 
-    // Ensure fields are editable
     binder.setReadOnly(false);
     binder.readBean(customer);
 
@@ -112,40 +108,5 @@ public class CustomerDialog extends Dialog {
     getFooter().add(cancelBtn, updateBtn);
     add(formLayout);
     open();
-  }
-
-  private void setFieldsReadOnly(Customer customer) {
-    name.setValue(customer.getName());
-    email.setValue(customer.getEmail());
-    phone.setValue(customer.getPhone());
-    gstin.setValue(customer.getGstin());
-    type.setValue(customer.getType());
-    street.setValue(customer.getStreet());
-    city.setValue(customer.getCity());
-    state.setValue(customer.getState());
-    postalCode.setValue(customer.getPostalCode());
-    binder.setReadOnly(true);
-  }
-
-  private static String formatCustomerDetails(Customer c) {
-    return String.format("""
-        Name: %s
-        Email: %s
-        Phone: %s
-        GSTIN: %s
-        Type: %s
-        Street: %s
-        City: %s
-        State: %s
-        Postal Code: %s""",
-        c.getName(),
-        c.getEmail(),
-        c.getPhone(),
-        c.getGstin(),
-        c.getType(),
-        c.getStreet(),
-        c.getCity(),
-        c.getState().name().replace('_', ' '),
-        c.getPostalCode());
   }
 }
