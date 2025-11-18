@@ -51,7 +51,8 @@ public class MainLayout extends AppLayout {
     var nav = new SideNav();
     nav.addItem(
             new SideNavItem("Home", "", VaadinIcon.HOME.create()),
-            new SideNavItem("Customers", "/customers", VaadinIcon.USER_CHECK.create())
+            new SideNavItem("Customers", "/customers", VaadinIcon.USER_CHECK.create()),
+            new SideNavItem("Invoice Items", "/invoice-items", VaadinIcon.INVOICE.create())
     );
     return nav;
   }

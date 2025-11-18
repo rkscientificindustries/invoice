@@ -10,4 +10,9 @@ public class InvoiceProperties {
    * Represents the number of customers associated with the invoice configuration.
    */
   public Integer customers = 10;
+
+  /**
+   * Represents the number of invoice items to generate for demo data.
+   */
+  public Integer items = 10;
 }

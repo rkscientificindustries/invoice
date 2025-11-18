@@ -24,10 +24,10 @@ The application supports a `demo` profile that automatically generates mock cust
 
 **Custom number of customers:**
 ```bash
-./gradlew bootRun --args='--spring.profiles.active=demo --invoice.customers=50'
+./gradlew bootRun --args='--spring.profiles.active=demo --invoice.customers=50 --invoice.items=50'
 ```
 
 **Using environment variables:**
 ```bash
-SPRING_PROFILES_ACTIVE=demo INVOICE_CUSTOMERS=25 ./gradlew bootRun
+SPRING_PROFILES_ACTIVE=demo INVOICE_CUSTOMERS=25 INVOICE_ITEMS=50 ./gradlew bootRun
 ```
