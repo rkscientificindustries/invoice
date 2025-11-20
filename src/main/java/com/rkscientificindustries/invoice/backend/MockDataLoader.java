@@ -172,7 +172,6 @@ public class MockDataLoader {
             .setScale(2, java.math.RoundingMode.HALF_UP);
     var vendorName = VENDOR_NAMES[index % VENDOR_NAMES.length];
 
-    return new InvoiceItem(name, description, hsnCode, unit, unitPrice,
-            costPrice, type, gstRate, vendorName);
+    return InvoiceItem.of(name, description, hsnCode, unit, unitPrice, costPrice, type, gstRate, vendorName);
   }
 }

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.BigDecimalField;
@@ -41,23 +42,13 @@ public class InvoiceItemDialog extends Dialog {
     setModal(true);
     setDraggable(true);
 
-    // Configure field hints
-    hsnCode.setHelperText("Enter 4 or 6 digit HSN code");
-    description.setMaxLength(200);
-    description.setHelperText("Max 200 characters");
-    unitPrice.setPrefixComponent(new com.vaadin.flow.component.html.Span("₹"));
-    costPrice.setPrefixComponent(new com.vaadin.flow.component.html.Span("₹"));
+    description.setMaxLength(500);
+    unitPrice.setPrefixComponent(new Span("₹"));
+    costPrice.setPrefixComponent(new Span("₹"));
 
     // Configure GST dropdown with only 5% and 18%
     gst.setItems(BigDecimal.valueOf(5), BigDecimal.valueOf(18));
     gst.setItemLabelGenerator(rate -> rate + "%");
-
-    // Set default values
-    unit.setValue(InvoiceItem.Unit.PCS);
-    type.setValue(InvoiceItem.ItemType.BO);
-    gst.setValue(BigDecimal.valueOf(18));
-    unitPrice.setValue(BigDecimal.ZERO);
-    costPrice.setValue(BigDecimal.ZERO);
 
     formLayout.add(name, description, hsnCode, unit, unitPrice, costPrice, vendorName, type, gst);
     formLayout.setResponsiveSteps(
@@ -78,7 +69,7 @@ public class InvoiceItemDialog extends Dialog {
     binder.setReadOnly(false);
     binder.readBean(item);
 
-    // Re-apply defaults
+    // Apply defaults
     unit.setValue(InvoiceItem.Unit.PCS);
     type.setValue(InvoiceItem.ItemType.BO);
     gst.setValue(BigDecimal.valueOf(18));

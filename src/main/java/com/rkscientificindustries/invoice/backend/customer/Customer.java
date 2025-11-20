@@ -6,12 +6,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+
+import java.time.Instant;
 
 @Table("customers")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
   @Id
   private Long id;
@@ -49,17 +58,16 @@ public class Customer {
   @Pattern(regexp = "^[1-9][0-9]{5}$", message = "Postal code must be a valid 6-digit number")
   private String postalCode;
 
+  @CreatedDate
+  Instant createdDate;
+
+  @LastModifiedDate
+  Instant lastModifiedDate;
+
+  @Version
+  int version;
+
   public static Customer of(String name, String email, String phone, CustomerType type, String gstin, String street, String city, State state, String postalCode) {
-    Customer customer = new Customer();
-    customer.setName(name);
-    customer.setEmail(email);
-    customer.setPhone(phone);
-    customer.setType(type);
-    customer.setGstin(gstin);
-    customer.setStreet(street);
-    customer.setCity(city);
-    customer.setState(state);
-    customer.setPostalCode(postalCode);
-    return customer;
+    return new Customer(null, name, email, phone, type, gstin, street, city, state, postalCode, null, null, 0);
   }
 }

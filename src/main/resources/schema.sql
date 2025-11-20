@@ -13,21 +13,27 @@ CREATE TABLE IF NOT EXISTS customers
     postal_code VARCHAR(6)   NOT NULL,
     country     VARCHAR(20)  NOT NULL DEFAULT 'India',
     type        VARCHAR(20)  NOT NULL,
-    gstin       VARCHAR(15)  NOT NULL UNIQUE
+    gstin       VARCHAR(15)  NOT NULL UNIQUE,
+    created_date          TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date    TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version               INTEGER        NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS invoice_items
 (
     id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(50)    NOT NULL,
-    description VARCHAR(200),
+    description VARCHAR(500),
     hsn_code    VARCHAR(6)     NOT NULL,
-    quantity    DECIMAL(10, 2) NOT NULL,
+    quantity    DECIMAL(10, 2) NOT NULL DEFAULT 1,
     unit        VARCHAR(10)    NOT NULL,
     unit_price  DECIMAL(10, 2) NOT NULL,
-    cost_price  DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    cost_price  DECIMAL(10, 2) NOT NULL,
     line_total  DECIMAL(10, 2) NOT NULL,
     type        VARCHAR(10),
     gst         DECIMAL(5, 2)  NOT NULL,
-    vendor_name VARCHAR(100)
+    vendor_name VARCHAR(100),
+    created_date          TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date    TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version               INTEGER        NOT NULL DEFAULT 0
 );

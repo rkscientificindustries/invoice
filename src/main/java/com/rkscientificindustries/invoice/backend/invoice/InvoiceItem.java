@@ -6,26 +6,32 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 
 @Table("invoice_items")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class InvoiceItem {
   @Id
   private Long id;
 
-  @NotBlank(message = "Item code cannot be empty")
-  @Size(max = 50, message = "Item code must not exceed 50 characters")
+  @NotBlank(message = "Item name cannot be empty")
+  @Size(max = 50, message = "Item name must not exceed 50 characters")
   private String name;
 
-  @Size(max = 200, message = "Description must not exceed 200 characters")
+  @Size(max = 500, message = "Description must not exceed 500 characters")
   private String description;
 
   @NotBlank
@@ -38,14 +44,14 @@ public class InvoiceItem {
   @NotNull
   private Unit unit;
 
-  @DecimalMin(value = "0.0", message = "Unit price cannot be negative")
-  private BigDecimal unitPrice = BigDecimal.ZERO;
+  @DecimalMin(value = "0.0")
+  private BigDecimal unitPrice;
 
-  @DecimalMin(value = "0.0", message = "Cost price cannot be negative")
-  private BigDecimal costPrice = BigDecimal.ZERO;
+  @DecimalMin(value = "0.0")
+  private BigDecimal costPrice;
 
-  @DecimalMin(value = "0.0", message = "Line total cannot be negative")
-  private BigDecimal lineTotal = BigDecimal.ZERO;
+  @DecimalMin(value = "0.0")
+  private BigDecimal lineTotal;
 
   @NotNull
   private ItemType type;
@@ -55,36 +61,19 @@ public class InvoiceItem {
 
   private String vendorName;
 
-  public InvoiceItem(String name, String description, String hsnCode, Unit unit, BigDecimal unitPrice,
-                     BigDecimal costPrice, ItemType type, BigDecimal gst, String vendorName) {
-    this.name = name;
-    this.description = description;
-    this.hsnCode = hsnCode;
-    this.unit = unit;
-    this.unitPrice = unitPrice;
-    this.costPrice = costPrice;
-    this.type = type;
-    this.gst = gst;
-    this.vendorName = vendorName;
-  }
+  @CreatedDate
+  Instant createdDate;
 
-  public static InvoiceItem of(String name, String description, String hsnCode, BigDecimal quantity,
-                               Unit unit, BigDecimal unitPrice, BigDecimal costPrice, String vendorName,
-                               ItemType type, BigDecimal gstRate) {
-    InvoiceItem item = new InvoiceItem();
-    item.setName(name);
-    item.setDescription(description);
-    item.setHsnCode(hsnCode);
-    item.setQuantity(quantity);
-    item.setUnit(unit);
-    item.setUnitPrice(unitPrice);
-    item.setCostPrice(costPrice);
-    item.setVendorName(vendorName);
-    item.setType(type);
-    item.setGst(gstRate);
-    item.setLineTotal(quantity.multiply(unitPrice).setScale(2, RoundingMode.HALF_UP));
+  @LastModifiedDate
+  Instant lastModifiedDate;
 
-    return item;
+  @Version
+  int version;
+
+  public static InvoiceItem of(String name, String description, String hsnCode, Unit unit,
+                               BigDecimal unitPrice, BigDecimal costPrice, ItemType type, BigDecimal gstRate, String vendorName) {
+    return new InvoiceItem(null, name, description, hsnCode, BigDecimal.ONE, unit, unitPrice, costPrice,
+            BigDecimal.ZERO, type, gstRate, vendorName, null, null, 0);
   }
 
   public BigDecimal getTaxAmount() {
