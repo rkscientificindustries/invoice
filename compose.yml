@@ -1,0 +1,10 @@
+services:
+  database:
+    image: postgres:18
+    container_name: invoice-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: invoice_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
