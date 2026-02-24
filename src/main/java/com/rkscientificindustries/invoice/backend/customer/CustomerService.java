@@ -35,6 +35,10 @@ public class CustomerService {
     return saved;
   }
 
+  public Optional<Customer> findById(Long id) {
+    return customerRepository.findById(id);
+  }
+
   @Transactional(readOnly = true)
   public List<Customer> findAll() {
     logger.debug("Fetching all customers");
