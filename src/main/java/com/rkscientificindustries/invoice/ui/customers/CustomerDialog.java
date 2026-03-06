@@ -37,16 +37,11 @@ public class CustomerDialog extends Dialog {
     this.customerService = customerService;
     this.onSaved = onSaved;
     setWidth("720px");
-    setModal(true);
     setDraggable(true);
 
-    formLayout.add(name, email, phone, gstin, type, street, city, state, postalCode);
-
-    binder.bindInstanceFields(this);
-
-    type.setValue(CustomerType.BUSINESS);
-    state.setValue(State.HARYANA);
     state.setItemLabelGenerator(s -> s.name().replace('_', ' '));
+    formLayout.add(name, email, phone, gstin, type, street, city, state, postalCode);
+    binder.bindInstanceFields(this);
   }
 
   public void openEmptyForm() {
@@ -55,29 +50,34 @@ public class CustomerDialog extends Dialog {
     setHeaderTitle("Add Customer");
 
     var customer = new Customer();
-    // Ensure fields are editable and cleared for a fresh entry
     binder.setReadOnly(false);
     binder.readBean(customer);
-    // Re-apply sensible defaults
+
     type.setValue(CustomerType.BUSINESS);
     state.setValue(State.HARYANA);
 
-    var saveBtn = new Button("Save", event -> {
+    var saveBtn = new Button("Save", _ -> {
       if (binder.writeBeanIfValid(customer)) {
-        close();
-        Notification.show("Customer created successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        onSaved.accept(customerService.save(customer));
+        try {
+          var saved = customerService.save(customer);
+          onSaved.accept(saved);
+          var notification = Notification.show("Customer created successfully");
+          notification.addThemeVariants(NotificationVariant.SUCCESS);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          close();
+        } catch (Exception ex) {
+          var notification = Notification.show("Failed to save: " + ex.getMessage());
+          notification.addThemeVariants(NotificationVariant.ERROR);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+        }
       }
     });
-    saveBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    saveBtn.addThemeVariants(ButtonVariant.PRIMARY);
     saveBtn.addClickShortcut(Key.ENTER);
-    var cancelBtn = new Button("Cancel", event -> {
-      binder.readBean(customer);
-      close();
-    });
+    var cancelBtn = new Button("Cancel", _ -> close());
+    cancelBtn.addClickShortcut(Key.ESCAPE);
 
     getFooter().add(cancelBtn, saveBtn);
-
     add(formLayout);
     open();
   }
@@ -90,16 +90,26 @@ public class CustomerDialog extends Dialog {
     binder.setReadOnly(false);
     binder.readBean(customer);
 
-    var updateBtn = new Button("Update", event -> {
+    var updateBtn = new Button("Update", _ -> {
       if (binder.writeBeanIfValid(customer)) {
-        close();
-        onSaved.accept(customerService.save(customer));
+        try {
+          var savedCustomer = customerService.save(customer);
+          onSaved.accept(savedCustomer);
+          var notification = Notification.show("Customer updated successfully");
+          notification.addThemeVariants(NotificationVariant.SUCCESS);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          close();
+        } catch (Exception ex) {
+          var notification = Notification.show("Failed to update: " + ex.getMessage());
+          notification.addThemeVariants(NotificationVariant.ERROR);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+        }
       }
     });
-    updateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    updateBtn.addThemeVariants(ButtonVariant.PRIMARY);
     updateBtn.addClickShortcut(Key.ENTER);
 
-    var cancelBtn = new Button("Cancel", event -> {
+    var cancelBtn = new Button("Cancel", _ -> {
       binder.readBean(customer); // Reset to original values
       close();
     });

@@ -25,22 +25,27 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @PageTitle("Customers")
 @Route(value = "customers", layout = MainLayout.class)
 public class CustomerListView extends MasterDetailLayout {
   private final Grid<Customer> grid = new Grid<>(Customer.class, false);
   private final CustomerService customerService;
-  private final CustomerDialog detailsDialog;
+  private final CustomerDialog customerDialog;
   private final ListDataProvider<Customer> dataProvider;
+  private final Map<Customer, Integer> rowIndexMap = new HashMap<>();
 
   public CustomerListView(CustomerService customerService) {
     this.customerService = customerService;
-    this.detailsDialog = new CustomerDialog(customerService, this::addCustomer);
+    this.customerDialog = new CustomerDialog(customerService, this::addCustomer);
 
     setSizeFull();
 
-    // Create master area with grid
+    // Create a master area with the grid
     var masterContent = new VerticalLayout();
     masterContent.setSizeFull();
     masterContent.setPadding(false);
@@ -50,7 +55,7 @@ public class CustomerListView extends MasterDetailLayout {
     masterContent.add(grid);
     masterContent.setFlexGrow(1, grid);
 
-    var addCustomerBtn = FabButton.create("Add Customer", e -> detailsDialog.openEmptyForm());
+    var addCustomerBtn = FabButton.create("Add Customer", _ -> customerDialog.openEmptyForm());
     masterContent.add(addCustomerBtn);
 
     setMaster(masterContent);
@@ -58,17 +63,18 @@ public class CustomerListView extends MasterDetailLayout {
     // Initially hide detail
     setDetail(null);
 
-    configureGrid();
     dataProvider = new ListDataProvider<>(customerService.findAll());
+    updateRowIndices();
+    configureGrid();
     grid.setDataProvider(dataProvider);
 
     // Configure master-detail behavior
     setMasterMinSize("400px");
     setDetailSize("500px");
 
-    // Hide detail on backdrop click and escape key
-    addBackdropClickListener(event -> closeDetail());
-    addDetailEscapePressListener(event -> closeDetail());
+    // Hide detail on a backdrop click and escape the key
+    addBackdropClickListener(_ -> closeDetail());
+    addDetailEscapePressListener(_ -> closeDetail());
   }
 
   private void configureGrid() {
@@ -76,25 +82,31 @@ public class CustomerListView extends MasterDetailLayout {
     configureGridInteractions();
   }
 
+  private void updateRowIndices() {
+    rowIndexMap.clear();
+    int index = 1;
+    for (Customer customer : dataProvider.getItems()) {
+      rowIndexMap.put(customer, index++);
+    }
+  }
+
   private void configureGridColumns() {
     grid.addComponentColumn(customer -> {
-              int index = dataProvider.getItems().stream()
-                      .toList()
-                      .indexOf(customer) + 1;
-              return new Span(String.valueOf(index));
-            })
-            .setHeader("#")
-            .setFlexGrow(0)
-            .setWidth("64px");
+          var index = rowIndexMap.get(customer);
+          return new Span(index != null ? String.valueOf(index) : "");
+        })
+        .setHeader("#")
+        .setFlexGrow(0)
+        .setWidth("64px");
 
     grid.addColumn(Customer::getName)
-            .setHeader("Name")
-            .setAutoWidth(true);
+        .setHeader("Name")
+        .setAutoWidth(true);
 
     grid.addColumn(Customer::getGstin)
-            .setHeader("GSTIN")
-            .setAutoWidth(true)
-            .setTextAlign(ColumnTextAlign.END);
+        .setHeader("GSTIN")
+        .setAutoWidth(true)
+        .setTextAlign(ColumnTextAlign.END);
   }
 
   private void configureGridInteractions() {
@@ -103,14 +115,13 @@ public class CustomerListView extends MasterDetailLayout {
       setDetail(createDetailContent(clickEvent.getItem()));
     });
 
-    grid.addCellFocusListener(event ->
-            event.getItem().ifPresent(customer -> grid.asSingleSelect().setValue(customer)));
+    grid.addCellFocusListener(e -> e.getItem().ifPresent(c -> grid.asSingleSelect().setValue(c)));
     Shortcuts.addShortcutListener(grid,
-            e -> {
-              var selected = grid.asSingleSelect().getValue();
-              setDetail(createDetailContent(selected));
-            },
-            Key.ENTER);
+        _ -> {
+          var selected = grid.asSingleSelect().getValue();
+          if (selected != null) setDetail(createDetailContent(selected));
+        },
+        Key.ENTER);
   }
 
   private VerticalLayout createDetailContent(Customer customer) {
@@ -136,99 +147,72 @@ public class CustomerListView extends MasterDetailLayout {
     header.setWidthFull();
     header.setAlignItems(HorizontalLayout.Alignment.CENTER);
     header.setSpacing(true);
-    header.getStyle()
-            .set("margin-bottom", "var(--lumo-space-m)");
 
     var customerName = new H2(nullSafe(customer.getName()));
     customerName.getStyle()
-            .set("margin", "0")
-            .set("flex", "1");
+        .set("flex", "1");
 
-    var editBtn = new Button("Edit", new Icon(VaadinIcon.EDIT), e -> {
-      var dialog = new CustomerDialog(customerService, c -> {
-        updateCustomer(c);
-        Notification.show("Customer updated").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    var editBtn = new Button("Edit", new Icon(VaadinIcon.EDIT), _ -> {
+      var dialog = new CustomerDialog(customerService, updatedCustomer -> {
+        updateRowIndices();
+        dataProvider.refreshAll();
+        setDetail(createDetailContent(updatedCustomer));
       });
       dialog.openUpdateForm(customer);
     });
-    editBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
+    editBtn.addThemeVariants(ButtonVariant.PRIMARY);
 
-    var deleteBtn = new Button("Delete", new Icon(VaadinIcon.TRASH), e -> {
+    var deleteBtn = new Button("Delete", new Icon(VaadinIcon.TRASH), _ -> {
       var confirmDialog = new ConfirmDialog();
       confirmDialog.setHeader("Delete Customer?");
       confirmDialog.setText("Are you sure you want to delete '" + customer.getName() + "' ?");
       confirmDialog.setCancelable(true);
       confirmDialog.setConfirmText("Delete");
-      confirmDialog.setConfirmButtonTheme("error primary");
-      confirmDialog.addConfirmListener(confirmEvent -> deleteCustomer(customer));
+      confirmDialog.addConfirmListener(_ -> deleteCustomer(customer));
       confirmDialog.open();
     });
-    deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
+    deleteBtn.addThemeVariants(ButtonVariant.ERROR);
 
     header.add(customerName, editBtn, deleteBtn);
     return header;
   }
 
   private Card createBasicInfoCard(Customer customer) {
-    Card card = new Card();
+    var card = new Card();
     card.setWidthFull();
-
-    H3 title = new H3("Basic Information");
-    title.getStyle()
-            .set("margin-top", "0")
-            .set("margin-bottom", "var(--lumo-space-m)")
-            .set("font-size", "var(--lumo-font-size-l)")
-            .set("font-weight", "600")
-            .set("color", "var(--lumo-primary-text-color)");
-
+    var title = new H3("Basic Information");
     card.add(
-            title,
-            createInfoRow(VaadinIcon.USER, "Customer Type",
-                    customer.getType() != null ? customer.getType().toString() : "N/A"),
-            createInfoRow(VaadinIcon.INVOICE, "GSTIN", nullSafe(customer.getGstin()))
+        title,
+        createInfoRow(VaadinIcon.USER, "Customer Type", customer.getType() != null ? customer.getType().name() : ""),
+        createInfoRow(VaadinIcon.INVOICE, "GSTIN", nullSafe(customer.getGstin()))
     );
-
     return card;
   }
 
   private Card createContactInfoCard(Customer customer) {
-    Card card = new Card();
+    var card = new Card();
     card.setWidthFull();
 
-    H3 title = new H3("Contact Information");
-    title.getStyle()
-            .set("margin-top", "0")
-            .set("margin-bottom", "var(--lumo-space-m)")
-            .set("font-size", "var(--lumo-font-size-l)")
-            .set("font-weight", "600")
-            .set("color", "var(--lumo-primary-text-color)");
-
+    var title = new H3("Contact Information");
     card.add(
-            title,
-            createInfoRow(VaadinIcon.ENVELOPE, "Email", nullSafe(customer.getEmail())),
-            createInfoRow(VaadinIcon.PHONE, "Phone", nullSafe(customer.getPhone()))
+        title,
+        createInfoRow(VaadinIcon.ENVELOPE, "Email", nullSafe(customer.getEmail())),
+        createInfoRow(VaadinIcon.PHONE, "Phone", nullSafe(customer.getPhone()))
     );
     return card;
   }
 
   private Card createAddressCard(Customer customer) {
-    Card card = new Card();
+    var card = new Card();
     card.setWidthFull();
 
-    H3 title = new H3("Address");
-    title.getStyle()
-            .set("margin-top", "0")
-            .set("margin-bottom", "var(--lumo-space-m)")
-            .set("font-size", "var(--lumo-font-size-l)")
-            .set("font-weight", "600")
-            .set("color", "var(--lumo-primary-text-color)");
-
+    var title = new H3("Address");
     card.add(
-            title,
-            createInfoRow(VaadinIcon.ROAD, "Street", nullSafe(customer.getStreet())),
-            createInfoRow(VaadinIcon.BUILDING, "City", nullSafe(customer.getCity())),
-            createInfoRow(VaadinIcon.MAP_MARKER, "State", customer.getState() != null ? customer.getState().name().replace('_', ' ') : "N/A"),
-            createInfoRow(VaadinIcon.MAILBOX, "Postal Code", nullSafe(customer.getPostalCode()))
+        title,
+        createInfoRow(VaadinIcon.ROAD, "Street", nullSafe(customer.getStreet())),
+        createInfoRow(VaadinIcon.BUILDING, "City", nullSafe(customer.getCity())),
+        createInfoRow(VaadinIcon.MAP_MARKER, "State", customer.getState() != null ? customer.getState().name() : ""),
+        createInfoRow(VaadinIcon.MAILBOX, "Postal Code", nullSafe(customer.getPostalCode()))
     );
     return card;
   }
@@ -238,29 +222,18 @@ public class CustomerListView extends MasterDetailLayout {
     row.setWidthFull();
     row.setAlignItems(HorizontalLayout.Alignment.START);
     row.setSpacing(true);
-    row.getStyle()
-            .set("margin-bottom", "var(--lumo-space-s)")
-            .set("flex-wrap", "wrap");
 
     var icon = new Icon(iconType);
-    icon.setSize("20px");
-    icon.getStyle()
-            .set("color", "var(--lumo-secondary-text-color)")
-            .set("margin-top", "2px")
-            .set("flex-shrink", "0");
-
     var labelSpan = new Span(label + ":");
     labelSpan.getStyle()
-            .set("font-weight", "500")
-            .set("color", "var(--lumo-secondary-text-color)")
-            .set("min-width", "120px")
-            .set("flex-shrink", "0");
+        .set("font-weight", "500")
+        .set("min-width", "120px")
+        .set("flex-shrink", "0");
 
     var valueSpan = new Span(value);
     valueSpan.getStyle()
-            .set("color", "var(--lumo-body-text-color)")
-            .set("word-break", "break-word")
-            .set("flex", "1");
+        .set("word-break", "break-word")
+        .set("flex", "1");
 
     row.add(icon, labelSpan, valueSpan);
     return row;
@@ -269,28 +242,29 @@ public class CustomerListView extends MasterDetailLayout {
   private void addCustomer(Customer customer) {
     if (!dataProvider.getItems().contains(customer)) {
       dataProvider.getItems().add(customer);
+      updateRowIndices();
       dataProvider.refreshAll();
     }
-  }
-
-  private void updateCustomer(Customer updated) {
-    dataProvider.refreshAll();
-    setDetail(createDetailContent(updated));
   }
 
   private void deleteCustomer(Customer customer) {
     try {
       customerService.deleteById(customer.getId());
-
-      Notification.show("Customer deleted successfully").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
+      var notification = Notification.show("Customer deleted successfully");
+      notification.addThemeVariants(NotificationVariant.SUCCESS);
+      notification.setPosition(Notification.Position.BOTTOM_CENTER);
       dataProvider.getItems().remove(customer);
+      updateRowIndices();
       dataProvider.refreshAll();
       closeDetail();
+    } catch (DataIntegrityViolationException ex) {
+      var notification = Notification.show("Cannot delete this customer because they have existing invoices.");
+      notification.addThemeVariants(NotificationVariant.ERROR);
+      notification.setPosition(Notification.Position.BOTTOM_CENTER);
     } catch (Exception ex) {
       var notification = Notification.show("Failed to delete customer: " + ex.getMessage());
-      notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-      notification.setDuration(5000);
+      notification.addThemeVariants(NotificationVariant.ERROR);
+      notification.setPosition(Notification.Position.BOTTOM_CENTER);
     }
   }
 
