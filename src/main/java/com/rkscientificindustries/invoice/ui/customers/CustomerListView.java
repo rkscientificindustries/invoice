@@ -4,7 +4,6 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
 import com.rkscientificindustries.invoice.ui.utils.AppConstants;
-import com.rkscientificindustries.invoice.ui.utils.FabButton;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.button.Button;
@@ -53,11 +52,17 @@ public class CustomerListView extends MasterDetailLayout {
     masterContent.setSpacing(false);
 
     grid.setSizeFull();
-    masterContent.add(grid);
-    masterContent.setFlexGrow(1, grid);
 
-    var addCustomerBtn = FabButton.create("Add Customer", _ -> customerDialog.openEmptyForm());
-    masterContent.add(addCustomerBtn);
+    var addBtn = new Button("Add Customer", new Icon(VaadinIcon.PLUS), _ -> customerDialog.openEmptyForm());
+    addBtn.addThemeVariants(ButtonVariant.PRIMARY);
+
+    var toolbar = new HorizontalLayout(addBtn);
+    toolbar.setWidthFull();
+    toolbar.setPadding(true);
+    toolbar.setJustifyContentMode(HorizontalLayout.JustifyContentMode.END);
+
+    masterContent.add(toolbar, grid);
+    masterContent.setFlexGrow(1, grid);
 
     setMaster(masterContent);
 

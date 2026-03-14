@@ -6,12 +6,17 @@ import com.rkscientificindustries.invoice.backend.invoice.Invoice;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
 import com.rkscientificindustries.invoice.ui.utils.AppConstants;
-import com.rkscientificindustries.invoice.ui.utils.FabButton;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.masterdetaillayout.MasterDetailLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -21,7 +26,6 @@ import com.vaadin.flow.router.Route;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import com.vaadin.flow.component.html.Span;
 
 @PageTitle("Invoices")
 @Route(value = "invoices", layout = MainLayout.class)
@@ -43,13 +47,12 @@ public class InvoiceListView extends MasterDetailLayout {
     var masterContent = new VerticalLayout();
     masterContent.setSizeFull();
     masterContent.setPadding(false);
+    masterContent.setSpacing(false);
 
     grid.setSizeFull();
     configureGrid();
-    masterContent.add(grid);
-    masterContent.setFlexGrow(1, grid);
 
-    var addInvoiceBtn = FabButton.create("Add Invoice", _ -> {
+    var addBtn = new Button("Add Invoice", new Icon(VaadinIcon.PLUS), _ -> {
       var invoice = Invoice.builder()
           .invoiceDate(LocalDate.now())
           .transport(Invoice.Transport.COURIER)
@@ -57,7 +60,15 @@ public class InvoiceListView extends MasterDetailLayout {
           .build();
       openInvoiceEditor(invoice);
     });
-    masterContent.add(addInvoiceBtn);
+    addBtn.addThemeVariants(ButtonVariant.PRIMARY);
+
+    var toolbar = new HorizontalLayout(addBtn);
+    toolbar.setWidthFull();
+    toolbar.setPadding(true);
+    toolbar.setJustifyContentMode(HorizontalLayout.JustifyContentMode.END);
+
+    masterContent.add(toolbar, grid);
+    masterContent.setFlexGrow(1, grid);
 
     setMaster(masterContent);
 

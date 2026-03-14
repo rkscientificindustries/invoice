@@ -3,7 +3,6 @@ package com.rkscientificindustries.invoice.ui.products;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
-import com.rkscientificindustries.invoice.ui.utils.FabButton;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.button.Button;
@@ -57,11 +56,17 @@ public class ProductListView extends MasterDetailLayout {
     masterContent.setSpacing(false);
 
     grid.setSizeFull();
-    masterContent.add(grid);
-    masterContent.setFlexGrow(1, grid);
 
-    var addProductBtn = FabButton.create("Add Product", _ -> productDialog.openEmptyForm());
-    masterContent.add(addProductBtn);
+    var addBtn = new Button("Add Product", new Icon(VaadinIcon.PLUS), _ -> productDialog.openEmptyForm());
+    addBtn.addThemeVariants(ButtonVariant.PRIMARY);
+
+    var toolbar = new HorizontalLayout(addBtn);
+    toolbar.setWidthFull();
+    toolbar.setPadding(true);
+    toolbar.setJustifyContentMode(HorizontalLayout.JustifyContentMode.END);
+
+    masterContent.add(toolbar, grid);
+    masterContent.setFlexGrow(1, grid);
 
     setMaster(masterContent);
 
