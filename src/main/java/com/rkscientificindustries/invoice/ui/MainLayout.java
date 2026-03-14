@@ -7,17 +7,15 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Layout;
-
-import static com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
-import static com.vaadin.flow.theme.lumo.LumoUtility.Display;
-import static com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
-import static com.vaadin.flow.theme.lumo.LumoUtility.FontWeight;
-import static com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import static com.vaadin.flow.theme.lumo.LumoUtility.Padding;
+import com.vaadin.flow.router.PageTitle;
 
 @Layout
-public class MainLayout extends AppLayout {
+public class MainLayout extends AppLayout implements AfterNavigationObserver {
+  private Span appName;
+
   public MainLayout() {
     var toggle = new DrawerToggle();
     addToDrawer(getSideNav());
@@ -26,12 +24,10 @@ public class MainLayout extends AppLayout {
   }
 
   private Div createHeader() {
-    var appName = new Span("Home");
-    appName.addClassNames(FontWeight.SEMIBOLD, FontSize.LARGE);
+    appName = new Span("Invoice Service");
+    appName.addClassNames("text-2xl");
 
-    var header = new Div(appName);
-    header.addClassNames(Display.FLEX, Padding.MEDIUM, Gap.MEDIUM, AlignItems.CENTER);
-    return header;
+    return new Div(appName);
   }
 
   private SideNav getSideNav() {
@@ -43,5 +39,17 @@ public class MainLayout extends AppLayout {
         new SideNavItem("Products", "/products", VaadinIcon.PACKAGE.create())
     );
     return nav;
+  }
+
+  @Override
+  public void afterNavigation(AfterNavigationEvent event) {
+    String title = "Invoice Service";
+    if (getContent() != null) {
+      PageTitle pageTitle = getContent().getClass().getAnnotation(PageTitle.class);
+      if (pageTitle != null) {
+        title = pageTitle.value();
+      }
+    }
+    appName.setText(title);
   }
 }

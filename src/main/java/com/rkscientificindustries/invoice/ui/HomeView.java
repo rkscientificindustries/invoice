@@ -5,7 +5,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Invoice Manager")
+@PageTitle("Invoice Service")
 @Route(value = "", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
     public HomeView() {
