@@ -35,7 +35,7 @@ public final class FabButton {
    */
   public static Button create(VaadinIcon icon, String tooltipText) {
     var button = new Button(new Icon(icon));
-    button.addThemeVariants(ButtonVariant.AURA_PRIMARY, ButtonVariant.LUMO_LARGE);
+    button.addThemeVariants(ButtonVariant.PRIMARY, ButtonVariant.LARGE);
     button.setTooltipText(tooltipText);
     applyFabStyles(button);
     return button;

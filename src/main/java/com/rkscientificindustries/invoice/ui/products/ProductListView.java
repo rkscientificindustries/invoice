@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 
 @PageTitle("Products")
 @Route(value = "products", layout = MainLayout.class)
@@ -73,8 +74,8 @@ public class ProductListView extends MasterDetailLayout {
     grid.setDataProvider(dataProvider);
 
     // Configure master-detail behavior
-    setMasterMinSize("400px");
-    setDetailSize("500px");
+    setMasterMinSize(AppConstants.MASTER_MIN_WIDTH);
+    setDetailSize(AppConstants.DETAIL_WIDTH_NARROW);
 
     // Hide detail on a backdrop click and escape the key
     addBackdropClickListener(_ -> closeDetail());
@@ -101,7 +102,7 @@ public class ProductListView extends MasterDetailLayout {
         })
         .setHeader("#")
         .setFlexGrow(0)
-        .setWidth("64px");
+        .setWidth(AppConstants.INDEX_COLUMN_WIDTH);
 
     grid.addColumn(Product::getName)
         .setHeader("Name")

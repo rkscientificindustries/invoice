@@ -14,6 +14,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 
 import java.util.function.Consumer;
 
@@ -36,7 +37,7 @@ public class CustomerDialog extends Dialog {
   public CustomerDialog(CustomerService customerService, Consumer<Customer> onSaved) {
     this.customerService = customerService;
     this.onSaved = onSaved;
-    setWidth("720px");
+    setWidth(AppConstants.DIALOG_WIDTH);
     setDraggable(true);
 
     state.setItemLabelGenerator(s -> s.name().replace('_', ' '));

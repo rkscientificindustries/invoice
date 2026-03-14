@@ -2,6 +2,7 @@ package com.rkscientificindustries.invoice.ui.products;
 
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -38,7 +39,7 @@ public class ProductDialog extends Dialog {
   public ProductDialog(ProductService productService, Consumer<Product> onSaved) {
     this.productService = productService;
     this.onSaved = onSaved;
-    setWidth("720px");
+    setWidth(AppConstants.DIALOG_WIDTH);
     setDraggable(true);
 
     description.setMaxLength(500);
@@ -50,8 +51,8 @@ public class ProductDialog extends Dialog {
 
     formLayout.add(name, description, hsnCode, unit, unitPrice, costPrice, vendorName, type, gstRate);
     formLayout.setResponsiveSteps(
-            new FormLayout.ResponsiveStep("0", 1),
-            new FormLayout.ResponsiveStep("500px", 2)
+        new FormLayout.ResponsiveStep("0", 1),
+        new FormLayout.ResponsiveStep("500px", 2)
     );
     formLayout.setColspan(description, 2);
 
@@ -70,7 +71,7 @@ public class ProductDialog extends Dialog {
     // Apply defaults
     unit.setValue(Product.Unit.PCS);
     type.setValue(Product.ItemType.BO);
-    gstRate.setValue(BigDecimal.valueOf(18));
+    gstRate.setValue(AppConstants.DEFAULT_GST_RATE);
     unitPrice.setValue(BigDecimal.ZERO);
     costPrice.setValue(BigDecimal.ZERO);
 
@@ -79,11 +80,14 @@ public class ProductDialog extends Dialog {
         try {
           close();
           var saved = productService.save(product);
-          Notification.show("Product created successfully").addThemeVariants(NotificationVariant.SUCCESS);
+          var notification = Notification.show("Product created successfully");
+          notification.addThemeVariants(NotificationVariant.SUCCESS);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
           onSaved.accept(saved);
         } catch (Exception ex) {
           var notification = Notification.show("Failed to save: " + ex.getMessage());
           notification.addThemeVariants(NotificationVariant.ERROR);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
           notification.setDuration(5000);
         }
       }
@@ -119,6 +123,7 @@ public class ProductDialog extends Dialog {
         } catch (Exception ex) {
           var notification = Notification.show("Failed to update: " + ex.getMessage());
           notification.addThemeVariants(NotificationVariant.ERROR);
+          notification.setPosition(Notification.Position.BOTTOM_CENTER);
           notification.setDuration(5000);
         }
       }

@@ -3,6 +3,7 @@ package com.rkscientificindustries.invoice.ui.customers;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.rkscientificindustries.invoice.ui.utils.FabButton;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Shortcuts;
@@ -69,8 +70,8 @@ public class CustomerListView extends MasterDetailLayout {
     grid.setDataProvider(dataProvider);
 
     // Configure master-detail behavior
-    setMasterMinSize("400px");
-    setDetailSize("500px");
+    setMasterMinSize(AppConstants.MASTER_MIN_WIDTH);
+    setDetailSize(AppConstants.DETAIL_WIDTH_NARROW);
 
     // Hide detail on a backdrop click and escape the key
     addBackdropClickListener(_ -> closeDetail());
@@ -97,7 +98,7 @@ public class CustomerListView extends MasterDetailLayout {
         })
         .setHeader("#")
         .setFlexGrow(0)
-        .setWidth("64px");
+        .setWidth(AppConstants.INDEX_COLUMN_WIDTH);
 
     grid.addColumn(Customer::getName)
         .setHeader("Name")
