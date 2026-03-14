@@ -11,6 +11,7 @@ import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
@@ -101,6 +102,7 @@ public class ProductListView extends MasterDetailLayout {
   }
 
   private void configureGridColumns() {
+    grid.addThemeVariants(GridVariant.ROW_STRIPES);
     grid.addComponentColumn(product -> {
           var index = rowIndexMap.get(product);
           return new Span(index != null ? String.valueOf(index) : "");

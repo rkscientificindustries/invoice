@@ -10,6 +10,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -97,6 +98,7 @@ public class InvoiceListView extends MasterDetailLayout {
   }
 
   private void configureGrid() {
+    grid.addThemeVariants(GridVariant.ROW_STRIPES);
     grid.addComponentColumn(invoice -> {
           var index = rowIndexMap.get(invoice);
           return new Span(index != null ? String.valueOf(index) : "");
