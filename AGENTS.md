@@ -53,7 +53,7 @@ The application uses a relational schema defined in `src/main/resources/db/migra
 - Local PostgreSQL is automatically managed via `compose.yml` if Docker is running.
 
 ## 🧪 Testing Strategy
-The project leverages Spring Boot 4's testing capabilities and **JUnit 6**. Agents MUST follow the modern patterns and best practices defined in the [Spring Boot Testing Skill](.agent/skills/spring-boot-testing/SKILL.md).
+The project leverages Spring Boot 4's testing capabilities and **JUnit 6**. Agents MUST follow the modern patterns and best practices defined in the [Spring Boot Testing Skill](.agents/skills/spring-boot-testing/SKILL.md).
 
 - **Unit Tests**: Focus on business logic in `backend/` using mock environments.
 - **Slicing**: Use Spring Boot's test slices for performance (e.g., `@DataJdbcTest`, `@JsonTest`).
