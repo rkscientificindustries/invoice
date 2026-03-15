@@ -2,7 +2,7 @@ plugins {
   java
   id("org.springframework.boot") version "4.0.0"
   id("io.spring.dependency-management") version "1.1.7"
-  id("com.vaadin") version "25.0.0"
+  id("com.vaadin") version "25.1.0-beta1"
 }
 
 group = "com.rkscientificindustries"
@@ -25,11 +25,13 @@ repositories {
   mavenCentral()
 }
 
-extra["vaadinVersion"] = "25.0.0"
+extra["vaadinVersion"] = "25.1.0-beta1"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.flywaydb:flyway-database-postgresql")
   implementation("com.vaadin:vaadin-spring-boot-starter")
 
   developmentOnly("com.vaadin:vaadin-dev")
@@ -40,6 +42,7 @@ dependencies {
   annotationProcessor("org.projectlombok:lombok")
 
   testImplementation("org.springframework.boot:spring-boot-starter-data-jdbc-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
   testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
   testImplementation("org.springframework.boot:spring-boot-testcontainers")
   testImplementation("org.testcontainers:testcontainers-junit-jupiter")

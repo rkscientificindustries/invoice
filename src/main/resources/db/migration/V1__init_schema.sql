@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS line_items;
-DROP TABLE IF EXISTS products;
-DROP TABLE IF EXISTS invoices;
-DROP TABLE IF EXISTS customers;
-
 CREATE TABLE IF NOT EXISTS customers
 (
     id                 BIGSERIAL PRIMARY KEY,
