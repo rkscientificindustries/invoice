@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "conventional-commit": {
+      "source": "marcelorodrigo/agent-skills",
+      "sourceType": "github",
+      "computedHash": "c09073f3bb5141fcefa8347051035c23ac2a87774ac3b1dec2a2afa583820dcf"
+    },
+    "spring-boot-testing": {
+      "source": "marcelorodrigo/agent-skills",
+      "sourceType": "github",
+      "computedHash": "cce764647a50572949236f5f15793a22d02b87ab3b529d1f5de123eb0b67f7c2"
+    }
+  }
+}
