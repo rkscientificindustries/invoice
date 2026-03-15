@@ -1,21 +1,20 @@
 package com.rkscientificindustries.invoice.backend.product;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Slf4j
 @Validated
 @Transactional
+@Service
 public class ProductService {
-  private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
   private final ProductRepository productRepository;
 
   public ProductService(ProductRepository productRepository) {
@@ -23,22 +22,22 @@ public class ProductService {
   }
 
   public Product save(@Valid Product product) {
-    logger.debug("Saving product: {}", product);
+    log.debug("Saving product: {}", product);
     var savedProduct = productRepository.save(product);
-    logger.info("Saved Product id={}", savedProduct.getId());
+    log.info("Saved Product id={}", savedProduct.getId());
     return savedProduct;
   }
 
   @Transactional(readOnly = true)
   public List<Product> findAll() {
-    logger.debug("Fetching all products");
+    log.debug("Fetching all products");
     var products = productRepository.findAllByOrderByIdAsc();
-    logger.debug("Found {} products", products.size());
+    log.debug("Found {} products", products.size());
     return products;
   }
 
   public void deleteById(Long id) {
-    logger.info("Deleting Product id={}", id);
+    log.info("Deleting Product id={}", id);
     productRepository.deleteById(id);
   }
 

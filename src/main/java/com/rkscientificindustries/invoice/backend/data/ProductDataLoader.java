@@ -3,8 +3,7 @@ package com.rkscientificindustries.invoice.backend.data;
 import com.rkscientificindustries.invoice.backend.config.InvoiceProperties;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,12 +12,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
-@Component
+@Slf4j
 @Order(2)
 @Profile("demo")
+@Component
 public class ProductDataLoader implements DataLoader {
-  private static final Logger logger = LoggerFactory.getLogger(ProductDataLoader.class);
-
   private final ProductRepository productRepository;
   private final InvoiceProperties invoiceProperties;
   private final Random random = new Random();
@@ -35,7 +33,7 @@ public class ProductDataLoader implements DataLoader {
       var product = generateMockProduct(i);
       productRepository.save(product);
     }
-    logger.info("\uD83D\uDCE6 Successfully loaded {} mock products", numberOfProducts);
+    log.info("\uD83D\uDCE6 Successfully loaded {} mock products", numberOfProducts);
   }
 
   private Product generateMockProduct(int index) {

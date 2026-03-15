@@ -4,12 +4,11 @@ import com.rkscientificindustries.invoice.backend.config.InvoiceProperties;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerRepository;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
+import com.rkscientificindustries.invoice.backend.invoice.InvoiceRepository;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductRepository;
-import com.rkscientificindustries.invoice.backend.invoice.InvoiceRepository;
 import com.rkscientificindustries.invoice.backend.utils.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -21,12 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Component
+@Slf4j
 @Order(3)
 @Profile("demo")
+@Component
 public class InvoiceDataLoader implements DataLoader {
-  private static final Logger logger = LoggerFactory.getLogger(InvoiceDataLoader.class);
-
   private final InvoiceRepository invoiceRepository;
   private final CustomerRepository customerRepository;
   private final ProductRepository productRepository;
@@ -50,7 +48,7 @@ public class InvoiceDataLoader implements DataLoader {
     List<Product> products = productRepository.findAll();
 
     if (customers.isEmpty() || products.isEmpty()) {
-      logger.warn("Skipping invoice generation: customers={}, products={}", customers.size(), products.size());
+      log.warn("Skipping invoice generation: customers={}, products={}", customers.size(), products.size());
       return;
     }
 
@@ -60,10 +58,10 @@ public class InvoiceDataLoader implements DataLoader {
         var invoice = generateInvoice(i, customers, products);
         invoiceRepository.save(invoice);
       } catch (Exception e) {
-        logger.error("Error generating invoice at index {}", i, e);
+        log.error("Error generating invoice at index {}", i, e);
       }
     }
-    logger.info("\uD83D\uDCC3 Successfully loaded {} mock invoices", numberOfInvoices);
+    log.info("\uD83D\uDCC3 Successfully loaded {} mock invoices", numberOfInvoices);
   }
 
   private Invoice generateInvoice(int index, List<Customer> customers, List<Product> products) {
@@ -97,7 +95,8 @@ public class InvoiceDataLoader implements DataLoader {
       int quantity = 1 + random.nextInt(10);
 
       BigDecimal lineSubtotal = product.getUnitPrice().multiply(BigDecimal.valueOf(quantity));
-      BigDecimal lineTax = lineSubtotal.multiply(product.getGstRate()).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+      BigDecimal lineTax = lineSubtotal.multiply(product.getGstRate())
+          .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
       BigDecimal lineTotal = lineSubtotal.add(lineTax);
 
       var lineItem = Invoice.LineItem.builder()
@@ -117,7 +116,8 @@ public class InvoiceDataLoader implements DataLoader {
 
     // Apply random discount (0-10%)
     BigDecimal discountPercentage = BigDecimal.valueOf(random.nextInt(11));
-    BigDecimal discountAmount = subtotal.multiply(discountPercentage).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+    BigDecimal discountAmount = subtotal.multiply(discountPercentage)
+        .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     BigDecimal discountedSubtotal = subtotal.subtract(discountAmount);
 
     // Calculate total amount (subtotal after discount + tax)

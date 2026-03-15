@@ -5,20 +5,18 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerRepository;
 import com.rkscientificindustries.invoice.backend.customer.CustomerType;
 import com.rkscientificindustries.invoice.backend.utils.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
-@Component
+@Slf4j
 @Order(1)
 @Profile("demo")
+@Component
 public class CustomerDataLoader implements DataLoader {
-  private static final Logger logger = LoggerFactory.getLogger(CustomerDataLoader.class);
-
   private final CustomerRepository customerRepository;
   private final InvoiceProperties invoiceProperties;
   private final Random random = new Random();
@@ -35,7 +33,7 @@ public class CustomerDataLoader implements DataLoader {
       var customer = generateMockCustomer(i);
       customerRepository.save(customer);
     }
-    logger.info("\uD83D\uDC68\u200D\uD83D\uDCBC Successfully loaded {} mock customers", numberOfCustomers);
+    log.info("\uD83D\uDC68\u200D\uD83D\uDCBC Successfully loaded {} mock customers", numberOfCustomers);
   }
 
   private Customer generateMockCustomer(int index) {
