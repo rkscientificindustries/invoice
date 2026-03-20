@@ -1,6 +1,6 @@
 package com.rkscientificindustries.invoice.ui.invoices;
 
-import com.rkscientificindustries.invoice.backend.invoice.Invoice;
+import com.rkscientificindustries.invoice.backend.invoice.LineItem;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.vaadin.flow.component.Key;
@@ -27,9 +27,9 @@ public class LineItemDialog extends Dialog {
   private final Button saveBtn = new Button();
 
   private Registration saveListener;
-  private Invoice.LineItem currentLine;
+  private LineItem currentLine;
   private boolean currentIsNew;
-  private Consumer<Invoice.LineItem> currentOnSave;
+  private Consumer<LineItem> currentOnSave;
 
   public LineItemDialog(ProductService productService) {
     this.productService = productService;
@@ -64,7 +64,7 @@ public class LineItemDialog extends Dialog {
     getFooter().add(cancel, saveBtn);
   }
 
-  public void open(Invoice.LineItem lineItem, boolean isNew, Consumer<Invoice.LineItem> onSave) {
+  public void open(LineItem lineItem, boolean isNew, Consumer<LineItem> onSave) {
     this.currentLine = lineItem;
     this.currentIsNew = isNew;
     this.currentOnSave = onSave;

@@ -9,5 +9,5 @@ public interface InvoiceRepository extends ListCrudRepository<Invoice, Long> {
   List<Invoice> findAllByOrderByIdAsc();
 
   @Query("SELECT * FROM line_items WHERE invoice_id = :invoiceId ORDER BY line_order")
-  List<Invoice.LineItem> findLineItemsByInvoiceId(Long invoiceId);
+  List<LineItem> findLineItemsByInvoiceId(Long invoiceId);
 }

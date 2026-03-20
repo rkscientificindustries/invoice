@@ -4,19 +4,20 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.backend.customer.CustomerType;
 import com.rkscientificindustries.invoice.backend.utils.State;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 
 import java.util.function.Consumer;
+
+import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 public class CustomerDialog extends Dialog {
   private final TextField name = new TextField("Name");
@@ -62,14 +63,10 @@ public class CustomerDialog extends Dialog {
         try {
           var saved = customerService.save(customer);
           onSaved.accept(saved);
-          var notification = Notification.show("Customer created successfully");
-          notification.addThemeVariants(NotificationVariant.SUCCESS);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          showNotification("Customer created successfully", NotificationVariant.SUCCESS);
           close();
         } catch (Exception ex) {
-          var notification = Notification.show("Failed to save: " + ex.getMessage());
-          notification.addThemeVariants(NotificationVariant.ERROR);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          showNotification("Failed to save: " + ex.getMessage(), NotificationVariant.ERROR);
         }
       }
     });
@@ -96,14 +93,10 @@ public class CustomerDialog extends Dialog {
         try {
           var savedCustomer = customerService.save(customer);
           onSaved.accept(savedCustomer);
-          var notification = Notification.show("Customer updated successfully");
-          notification.addThemeVariants(NotificationVariant.SUCCESS);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          showNotification("Customer updated successfully", NotificationVariant.SUCCESS);
           close();
         } catch (Exception ex) {
-          var notification = Notification.show("Failed to update: " + ex.getMessage());
-          notification.addThemeVariants(NotificationVariant.ERROR);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          showNotification("Failed to save: " + ex.getMessage(), NotificationVariant.ERROR);
         }
       }
     });

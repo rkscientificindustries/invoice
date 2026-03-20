@@ -19,7 +19,6 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.masterdetaillayout.MasterDetailLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,6 +29,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 @PageTitle("Customers")
 @Route(value = "customers", layout = MainLayout.class)
@@ -258,21 +259,15 @@ public class CustomerListView extends MasterDetailLayout {
   private void deleteCustomer(Customer customer) {
     try {
       customerService.deleteById(customer.getId());
-      var notification = Notification.show("Customer deleted successfully");
-      notification.addThemeVariants(NotificationVariant.SUCCESS);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Customer deleted successfully", NotificationVariant.SUCCESS);
       dataProvider.getItems().remove(customer);
       updateRowIndices();
       dataProvider.refreshAll();
       closeDetail();
     } catch (DataIntegrityViolationException ex) {
-      var notification = Notification.show("Cannot delete this customer because they have existing invoices.");
-      notification.addThemeVariants(NotificationVariant.ERROR);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Cannot delete this customer because they have existing invoices.", NotificationVariant.ERROR);
     } catch (Exception ex) {
-      var notification = Notification.show("Failed to delete customer: " + ex.getMessage());
-      notification.addThemeVariants(NotificationVariant.ERROR);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Failed to delete customer: " + ex.getMessage(), NotificationVariant.ERROR);
     }
   }
 

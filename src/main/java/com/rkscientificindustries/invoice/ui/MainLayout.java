@@ -25,8 +25,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
   private Div createHeader() {
     appName = new Span("Invoice Service");
-    appName.addClassNames("text-2xl");
-
+    appName.getStyle().set("font-size", "var(--aura-font-size-xl)");
     return new Div(appName);
   }
 
@@ -35,6 +34,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     nav.addItem(
         new SideNavItem("Home", "", VaadinIcon.HOME.create()),
         new SideNavItem("Invoices", "/invoices", VaadinIcon.INVOICE.create()),
+        new SideNavItem("Invoices \uD83D\uDE80", "/invoices-new", VaadinIcon.INVOICE.create()),
         new SideNavItem("Customers", "/customers", VaadinIcon.USER_CHECK.create()),
         new SideNavItem("Products", "/products", VaadinIcon.PACKAGE.create())
     );

@@ -70,7 +70,7 @@ class InvoiceRepositoryTest {
   @Test
   void shouldSaveAndFindInvoiceWithLineItems() {
     // Arrange
-    Invoice.LineItem item = Invoice.LineItem.builder()
+    LineItem item = LineItem.builder()
         .productId(productId)
         .quantity(2)
         .unitPrice(new BigDecimal("100.00"))
@@ -79,7 +79,7 @@ class InvoiceRepositoryTest {
         .totalAmount(new BigDecimal("236.00"))
         .build();
 
-    List<Invoice.LineItem> items = new ArrayList<>();
+    List<LineItem> items = new ArrayList<>();
     items.add(item);
 
     Invoice invoice = Invoice.builder()

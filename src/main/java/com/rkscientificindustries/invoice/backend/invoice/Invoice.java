@@ -3,12 +3,8 @@ package com.rkscientificindustries.invoice.backend.invoice;
 import com.rkscientificindustries.invoice.backend.utils.State;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,6 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table("invoices")
@@ -49,9 +46,9 @@ public class Invoice {
   @Min(value = 1, message = "Number of packages must be at least 1")
   private Integer packageCount;
 
-  @NotEmpty(message = "Invoice must have at least one item")
+  @Builder.Default
   @MappedCollection(idColumn = "invoice_id", keyColumn = "line_order")
-  private List<LineItem> items;
+  private List<LineItem> items = new ArrayList<>();
 
   @DecimalMin(value = "0.0")
   private BigDecimal subtotal;
@@ -64,6 +61,13 @@ public class Invoice {
 
   @DecimalMin(value = "0.0")
   private BigDecimal totalAmount;
+
+  private LocalDate dueDate;
+
+  @Builder.Default
+  private InvoiceStatus status = InvoiceStatus.DRAFT;
+
+  private String termsAndConditions;
 
   @CreatedDate
   private Instant createdDate;
@@ -84,35 +88,5 @@ public class Invoice {
 
   public enum Transport {
     SELF, COURIER
-  }
-
-  @Table("line_items")
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @Builder
-  public static class LineItem {
-      @Id
-      private Long id;
-
-      private Integer lineOrder;
-
-      @NotNull
-      private Long productId;
-
-      @Min(value = 1, message = "Quantity must be at least 1")
-      private Integer quantity;
-
-      @DecimalMin(value = "0.0")
-      private BigDecimal unitPrice;
-
-      @DecimalMin(value = "0.0")
-      private BigDecimal gstRate;
-
-      @DecimalMin(value = "0.0")
-      private BigDecimal taxAmount;
-
-      @DecimalMin(value = "0.0")
-      private BigDecimal totalAmount;
   }
 }

@@ -10,7 +10,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -19,6 +18,8 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
+
+import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 public class ProductDialog extends Dialog {
   private final TextField name = new TextField("Product Name");
@@ -80,15 +81,10 @@ public class ProductDialog extends Dialog {
         try {
           close();
           var saved = productService.save(product);
-          var notification = Notification.show("Product created successfully");
-          notification.addThemeVariants(NotificationVariant.SUCCESS);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
+          showNotification("Product created successfully", NotificationVariant.SUCCESS);
           onSaved.accept(saved);
         } catch (Exception ex) {
-          var notification = Notification.show("Failed to save: " + ex.getMessage());
-          notification.addThemeVariants(NotificationVariant.ERROR);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
-          notification.setDuration(5000);
+          showNotification("Failed to save: " + ex.getMessage(), NotificationVariant.ERROR);
         }
       }
     });
@@ -121,10 +117,7 @@ public class ProductDialog extends Dialog {
           onSaved.accept(saved);
           close();
         } catch (Exception ex) {
-          var notification = Notification.show("Failed to update: " + ex.getMessage());
-          notification.addThemeVariants(NotificationVariant.ERROR);
-          notification.setPosition(Notification.Position.BOTTOM_CENTER);
-          notification.setDuration(5000);
+          showNotification("Failed to save: " + ex.getMessage(), NotificationVariant.ERROR);
         }
       }
     });

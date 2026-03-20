@@ -11,7 +11,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties(InvoiceProperties.class)
 @StyleSheet(Aura.STYLESHEET)
-@StyleSheet("styles.css")
 public class InvoiceApplication implements AppShellConfigurator {
 
   public static void main(String[] args) {

@@ -5,6 +5,7 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerRepository;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceRepository;
+import com.rkscientificindustries.invoice.backend.invoice.LineItem;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductRepository;
 import com.rkscientificindustries.invoice.backend.utils.State;
@@ -85,7 +86,7 @@ public class InvoiceDataLoader implements DataLoader {
 
     // Generate 2-5 line items
     int lineItemCount = 2 + random.nextInt(4);
-    List<Invoice.LineItem> invoiceLines = new ArrayList<>();
+    List<LineItem> invoiceLines = new ArrayList<>();
 
     BigDecimal subtotal = BigDecimal.ZERO;
     BigDecimal totalTax = BigDecimal.ZERO;
@@ -99,8 +100,8 @@ public class InvoiceDataLoader implements DataLoader {
           .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
       BigDecimal lineTotal = lineSubtotal.add(lineTax);
 
-      var lineItem = Invoice.LineItem.builder()
-          .lineOrder(lineOrder)
+      var lineItem = LineItem.builder()
+//          .lineOrder(lineOrder)
           .productId(product.getId())
           .quantity(quantity)
           .unitPrice(product.getUnitPrice())

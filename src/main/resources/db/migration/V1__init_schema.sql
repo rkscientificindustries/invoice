@@ -35,39 +35,42 @@ CREATE TABLE IF NOT EXISTS products
 
 CREATE TABLE IF NOT EXISTS invoices
 (
-    id                  BIGSERIAL PRIMARY KEY,
-    invoice_number      VARCHAR(50),
-    invoice_date        DATE,
-    billed_to           BIGINT REFERENCES customers (id),
-    shipped_to          BIGINT REFERENCES customers (id),
-    place               VARCHAR(100),
-    transport           VARCHAR(20),
-    courier_name        VARCHAR(100),
-    vehicle_number      VARCHAR(50),
-    e_way_bill_number   VARCHAR(50),
-    package_count       INTEGER,
-    subtotal            DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    discount_percentage DECIMAL(5, 2)  DEFAULT 0,
-    total_tax           DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    total_amount        DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    created_date        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date  TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    version             INTEGER        NOT NULL DEFAULT 0
+    id                   BIGSERIAL PRIMARY KEY,
+    invoice_number       VARCHAR(50),
+    invoice_date         DATE,
+    billed_to            BIGINT REFERENCES customers (id),
+    shipped_to           BIGINT REFERENCES customers (id),
+    place                VARCHAR(100),
+    transport            VARCHAR(20),
+    courier_name         VARCHAR(100),
+    vehicle_number       VARCHAR(50),
+    e_way_bill_number    VARCHAR(50),
+    package_count        INTEGER,
+    subtotal             DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    discount_percentage  DECIMAL(5, 2)           DEFAULT 0,
+    total_tax            DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    total_amount         DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    due_date             DATE,
+    status               VARCHAR(20)    NOT NULL DEFAULT 'DRAFT',
+    terms_and_conditions TEXT,
+    created_date         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date   TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version              INTEGER        NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS line_items
 (
-    id              BIGSERIAL PRIMARY KEY,
-    invoice_id      BIGINT         NOT NULL REFERENCES invoices (id) ON DELETE CASCADE,
-    line_order      INTEGER        NOT NULL,
-    product_id      BIGINT         NOT NULL REFERENCES products (id),
-    quantity        INTEGER        NOT NULL,
-    unit_price      DECIMAL(12, 2) NOT NULL,
-    gst_rate        DECIMAL(5, 2)  NOT NULL,
-    tax_amount      DECIMAL(12, 2) NOT NULL,
-    total_amount    DECIMAL(12, 2) NOT NULL,
+    id           BIGSERIAL PRIMARY KEY,
+    invoice_id   BIGINT         NOT NULL REFERENCES invoices (id) ON DELETE CASCADE,
+    line_order   INTEGER        NOT NULL,
+    product_id   BIGINT         NOT NULL REFERENCES products (id),
+    quantity     INTEGER        NOT NULL,
+    unit_price   DECIMAL(12, 2) NOT NULL,
+    gst_rate     DECIMAL(5, 2)  NOT NULL,
+    tax_amount   DECIMAL(12, 2) NOT NULL,
+    total_amount DECIMAL(12, 2) NOT NULL,
     CONSTRAINT uq_line_item UNIQUE (invoice_id, line_order)
 );
 
 -- Optional index to speed up lookups by invoice
-CREATE INDEX IF NOT EXISTS idx_line_items_invoice_id ON line_items(invoice_id);
+CREATE INDEX IF NOT EXISTS idx_line_items_invoice_id ON line_items (invoice_id);

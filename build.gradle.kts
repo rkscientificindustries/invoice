@@ -2,7 +2,7 @@ plugins {
   java
   id("org.springframework.boot") version "4.0.0"
   id("io.spring.dependency-management") version "1.1.7"
-  id("com.vaadin") version "25.1.0-beta1"
+  id("com.vaadin") version "25.1.0-beta3"
 }
 
 group = "com.rkscientificindustries"
@@ -25,7 +25,7 @@ repositories {
   mavenCentral()
 }
 
-extra["vaadinVersion"] = "25.1.0-beta1"
+extra["vaadinVersion"] = "25.1.0-beta3"
 extra["springBootVersion"] = "4.0.0"
 
 dependencies {
@@ -35,6 +35,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.flywaydb:flyway-database-postgresql")
   implementation("com.vaadin:vaadin-spring-boot-starter")
+  implementation("com.github.librepdf:openpdf:3.0.3")
 
   developmentOnly("com.vaadin:vaadin-dev")
   developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -64,35 +65,47 @@ tasks.withType<Test> {
 }
 
 tasks.register("updateReadmeBadges") {
-    group = "documentation"
-    description = "Updates the version badges in README.md based on project configuration."
-    
-    doLast {
-        val readmeFile = file("README.md")
-        if (!readmeFile.exists()) {
-            println("README.md not found.")
-            return@doLast
-        }
+  group = "documentation"
+  description = "Updates the version badges in README.md based on project configuration."
 
-        val javaVersion = java.toolchain.languageVersion.get().toString()
-        val springBootVersion = project.extra["springBootVersion"] as String
-        val vaadinVersion = project.extra["vaadinVersion"] as String
-        
-        val composeFile = file("compose.yml")
-        val postgresVersion = if (composeFile.exists()) {
-            val content = composeFile.readText()
-            Regex("image: postgres:(\\d+)").find(content)?.groupValues?.get(1) ?: "unknown"
-        } else {
-            "unknown"
-        }
-
-        var content = readmeFile.readText()
-        content = content.replace(Regex("!\\[Java\\]\\(https://img\\.shields\\.io/badge/Java-[^)]+\\)"), "![Java](https://img.shields.io/badge/Java-$javaVersion-blue.svg)")
-        content = content.replace(Regex("!\\[Spring Boot\\]\\(https://img\\.shields\\.io/badge/Spring_Boot-[^)]+\\)"), "![Spring Boot](https://img.shields.io/badge/Spring_Boot-$springBootVersion-6DB33F.svg?logo=spring-boot)")
-        content = content.replace(Regex("!\\[Vaadin\\]\\(https://img\\.shields\\.io/badge/Vaadin-[^)]+\\)"), "![Vaadin](https://img.shields.io/badge/Vaadin-${vaadinVersion.replace("-", "--")}-00B4F0.svg?logo=vaadin)")
-        content = content.replace(Regex("!\\[PostgreSQL\\]\\(https://img\\.shields\\.io/badge/PostgreSQL-[^)]+\\)"), "![PostgreSQL](https://img.shields.io/badge/PostgreSQL-$postgresVersion-316192.svg?logo=postgresql)")
-        
-        readmeFile.writeText(content)
-        println("Successfully updated README.md badges with Java $javaVersion, Spring Boot $springBootVersion, Vaadin $vaadinVersion, and PostgreSQL $postgresVersion.")
+  doLast {
+    val readmeFile = file("README.md")
+    if (!readmeFile.exists()) {
+      println("README.md not found.")
+      return@doLast
     }
+
+    val javaVersion = java.toolchain.languageVersion.get().toString()
+    val springBootVersion = project.extra["springBootVersion"] as String
+    val vaadinVersion = project.extra["vaadinVersion"] as String
+
+    val composeFile = file("compose.yml")
+    val postgresVersion = if (composeFile.exists()) {
+      val content = composeFile.readText()
+      Regex("image: postgres:(\\d+)").find(content)?.groupValues?.get(1) ?: "unknown"
+    } else {
+      "unknown"
+    }
+
+    var content = readmeFile.readText()
+    content = content.replace(
+      Regex("!\\[Java\\]\\(https://img\\.shields\\.io/badge/Java-[^)]+\\)"),
+      "![Java](https://img.shields.io/badge/Java-$javaVersion-blue.svg)"
+    )
+    content = content.replace(
+      Regex("!\\[Spring Boot\\]\\(https://img\\.shields\\.io/badge/Spring_Boot-[^)]+\\)"),
+      "![Spring Boot](https://img.shields.io/badge/Spring_Boot-$springBootVersion-6DB33F.svg?logo=spring-boot)"
+    )
+    content = content.replace(
+      Regex("!\\[Vaadin\\]\\(https://img\\.shields\\.io/badge/Vaadin-[^)]+\\)"),
+      "![Vaadin](https://img.shields.io/badge/Vaadin-${vaadinVersion.replace("-", "--")}-00B4F0.svg?logo=vaadin)"
+    )
+    content = content.replace(
+      Regex("!\\[PostgreSQL\\]\\(https://img\\.shields\\.io/badge/PostgreSQL-[^)]+\\)"),
+      "![PostgreSQL](https://img.shields.io/badge/PostgreSQL-$postgresVersion-316192.svg?logo=postgresql)"
+    )
+
+    readmeFile.writeText(content)
+    println("Successfully updated README.md badges with Java $javaVersion, Spring Boot $springBootVersion, Vaadin $vaadinVersion, and PostgreSQL $postgresVersion.")
+  }
 }

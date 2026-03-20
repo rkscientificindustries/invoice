@@ -3,6 +3,7 @@ package com.rkscientificindustries.invoice.ui.invoices;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
+import com.rkscientificindustries.invoice.backend.invoice.LineItem;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.backend.utils.State;
@@ -16,7 +17,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -32,6 +32,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 @SpringComponent
 @UIScope
@@ -55,7 +57,7 @@ public class InvoiceEditor extends VerticalLayout {
   private final Span totalLabel = new Span("Total: 0.00");
 
   private final Binder<Invoice> binder = new Binder<>(Invoice.class);
-  private final Grid<Invoice.LineItem> lineGrid = new Grid<>(Invoice.LineItem.class, false);
+  private final Grid<LineItem> lineGrid = new Grid<>(LineItem.class, false);
   private final LineItemDialog lineItemDialog;
   private Invoice currentInvoice;
   private Button saveBtn;
@@ -150,9 +152,9 @@ public class InvoiceEditor extends VerticalLayout {
         .setFrozen(true)
         .setAutoWidth(true)
         .setFlexGrow(0);
-    lineGrid.addColumn(Invoice.LineItem::getUnitPrice).setHeader("Price");
-    lineGrid.addColumn(Invoice.LineItem::getQuantity).setHeader("Qty");
-    lineGrid.addColumn(Invoice.LineItem::getTotalAmount).setHeader("Total").setTextAlign(ColumnTextAlign.END);
+    lineGrid.addColumn(LineItem::getUnitPrice).setHeader("Price");
+    lineGrid.addColumn(LineItem::getQuantity).setHeader("Qty");
+    lineGrid.addColumn(LineItem::getTotalAmount).setHeader("Total").setTextAlign(ColumnTextAlign.END);
     lineGrid.addComponentColumn(line -> {
           var actions = new HorizontalLayout();
           var editBtn = new Button(new Icon(VaadinIcon.EDIT));
@@ -178,11 +180,11 @@ public class InvoiceEditor extends VerticalLayout {
 
     var addLineBtn = new Button("Add Item", VaadinIcon.PLUS.create());
     addLineBtn.addClickListener(_ -> {
-      var lineItem = Invoice.LineItem.builder().build();
+      var lineItem = LineItem.builder().build();
       if (currentInvoice.getItems() == null) {
         currentInvoice.setItems(new ArrayList<>());
       }
-      lineItem.setLineOrder(currentInvoice.getItems().size());
+//      lineItem.setLineOrder(currentInvoice.getItems().size());
       openLineItemDialog(lineItem, true);
     });
 
@@ -190,7 +192,7 @@ public class InvoiceEditor extends VerticalLayout {
     lineGrid.setAllRowsVisible(true);
   }
 
-  private void openLineItemDialog(Invoice.LineItem lineItem, boolean isNew) {
+  private void openLineItemDialog(LineItem lineItem, boolean isNew) {
     lineItemDialog.open(lineItem, isNew, savedLine -> {
       if (isNew) {
         if (currentInvoice.getItems() == null) currentInvoice.setItems(new ArrayList<>());
@@ -205,8 +207,8 @@ public class InvoiceEditor extends VerticalLayout {
   private void reindexLineOrder() {
     if (currentInvoice.getItems() == null) return;
     for (int i = 0; i < currentInvoice.getItems().size(); i++) {
-      var l = currentInvoice.getItems().get(i);
-      l.setLineOrder(i);
+//      var l = currentInvoice.getItems().get(i);
+//      l.setLineOrder(i);
     }
   }
 
@@ -235,7 +237,7 @@ public class InvoiceEditor extends VerticalLayout {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     var tax = currentInvoice.getItems().stream()
-        .map(Invoice.LineItem::getTaxAmount)
+        .map(LineItem::getTaxAmount)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     var total = subtotal.add(tax);
@@ -278,9 +280,7 @@ public class InvoiceEditor extends VerticalLayout {
         onSave.accept(currentInvoice);
       }
     } catch (ValidationException e) {
-      var notification = Notification.show("Please correct the errors in the form");
-      notification.addThemeVariants(NotificationVariant.ERROR);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Please correct the errors in the form", NotificationVariant.ERROR);
     }
   }
 }

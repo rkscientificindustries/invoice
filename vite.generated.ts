@@ -32,7 +32,7 @@ import serviceWorkerPlugin from './build/plugins/vite-plugin-service-worker';
 
 import { visualizer } from 'rollup-plugin-visualizer';
 import reactPlugin from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
+
 
 
 
@@ -568,7 +568,7 @@ export const vaadinConfig: UserConfigFn = (env) => {
           ].filter(Boolean)
         }
       }),
-      tailwindcss(),
+      
       productionMode && vaadinI18n({
         cwd: __dirname,
         meta: {

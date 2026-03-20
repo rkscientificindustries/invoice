@@ -3,6 +3,7 @@ package com.rkscientificindustries.invoice.ui.products;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Shortcuts;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +19,6 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.masterdetaillayout.MasterDetailLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import com.rkscientificindustries.invoice.ui.utils.AppConstants;
+
+import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 @PageTitle("Products")
 @Route(value = "products", layout = MainLayout.class)
@@ -319,22 +320,16 @@ public class ProductListView extends MasterDetailLayout {
   private void deleteProduct(Product product) {
     try {
       productService.deleteById(product.getId());
-      var notification = Notification.show("Product deleted successfully");
-      notification.addThemeVariants(NotificationVariant.SUCCESS);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Product deleted successfully", NotificationVariant.SUCCESS);
 
       dataProvider.getItems().remove(product);
       updateRowIndices();
       dataProvider.refreshAll();
       closeDetail();
     } catch (DataIntegrityViolationException ex) {
-      var notification = Notification.show("Cannot delete this product because it is used by existing invoices.");
-      notification.addThemeVariants(NotificationVariant.ERROR);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Cannot delete this product because it is used by existing invoices.", NotificationVariant.ERROR);
     } catch (Exception ex) {
-      var notification = Notification.show("Failed to delete product: " + ex.getMessage());
-      notification.addThemeVariants(NotificationVariant.ERROR);
-      notification.setPosition(Notification.Position.BOTTOM_CENTER);
+      showNotification("Failed to delete product: " + ex.getMessage(), NotificationVariant.ERROR);
     }
   }
 
