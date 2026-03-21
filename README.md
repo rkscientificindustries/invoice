@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-25-blue.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.0-6DB33F.svg?logo=spring-boot)
-![Vaadin](https://img.shields.io/badge/Vaadin-25.1.0--beta1-00B4F0.svg?logo=vaadin)
+![Vaadin](https://img.shields.io/badge/Vaadin-25.1.0--beta3-00B4F0.svg?logo=vaadin)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-316192.svg?logo=postgresql)
 
 A modern Spring Boot application designed to manage business workflows: Customers, Products, and Invoices. It features a rich, responsive web interface built with Vaadin.
