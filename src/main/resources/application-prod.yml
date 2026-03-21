@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:invoice_db}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  docker:
+    compose:
+      enabled: false
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.rkscientificindustries: INFO

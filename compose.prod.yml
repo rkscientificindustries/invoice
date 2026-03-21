@@ -1,0 +1,35 @@
+services:
+  app:
+    # Use image from the registry in production
+    image: ${IMAGE_NAME:-invoice-app:latest}
+    restart: unless-stopped
+    ports:
+      - "80:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,demo
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=invoice_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=invoice_db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - invoice-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d invoice_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  invoice-data:
