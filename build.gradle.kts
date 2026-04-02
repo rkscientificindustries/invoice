@@ -1,8 +1,8 @@
 plugins {
   java
-  id("org.springframework.boot") version "4.0.0"
+  id("org.springframework.boot") version "4.0.5"
   id("io.spring.dependency-management") version "1.1.7"
-  id("com.vaadin") version "25.1.0-beta3"
+  id("com.vaadin") version "25.1.1"
 }
 
 group = "com.rkscientificindustries"
@@ -25,8 +25,8 @@ repositories {
   mavenCentral()
 }
 
-extra["vaadinVersion"] = "25.1.0-beta3"
-extra["springBootVersion"] = "4.0.0"
+extra["vaadinVersion"] = "25.1.1"
+extra["springBootVersion"] = "4.0.5"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
