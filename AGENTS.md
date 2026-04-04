@@ -56,9 +56,11 @@ The application uses a relational schema defined in `src/main/resources/db/migra
 The project leverages Spring Boot 4's testing capabilities and **JUnit 6**. Agents MUST follow the modern patterns and best practices defined in the [Spring Boot Testing Skill](.agents/skills/spring-boot-testing/SKILL.md).
 
 - **Unit Tests**: Focus on business logic in `backend/` using mock environments.
+- **Vaadin UI Unit Tests (Browserless)**: Use browserless testing for Vaadin views and components. Browserless testing was previously called UI Unit Testing.
+- **Vaadin Browserless APIs**: Use `BrowserlessTest` / `SpringBrowserlessTest` and the `browserless-test-junit6` dependency for new tests.
+- **Scope for This Project**: Do not add end-to-end UI tests for now. TestBench end-to-end coverage is intentionally out of scope until explicitly requested.
 - **Slicing**: Use Spring Boot's test slices for performance (e.g., `@DataJdbcTest`, `@JsonTest`).
 - **Integration Tests**: Use `@SpringBootTest` combined with Testcontainers. Use `@ServiceConnection` to automatically link containers like PostgreSQL.
-- **Vaadin Testing**: Verification of UI logic should be done via unit tests where possible, or integration tests for view-to-backend wiring.
 
 ## 🧠 Coding Guidelines for Agents
 1. **Model Management**: Use Lombok annotations (`@Data`, `@Builder`, etc.) to keep entities clean.
