@@ -34,7 +34,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     nav.addItem(
         new SideNavItem("Home", "", VaadinIcon.HOME.create()),
         new SideNavItem("Invoices", "/invoices", VaadinIcon.INVOICE.create()),
-        new SideNavItem("Invoices \uD83D\uDE80", "/invoices-new", VaadinIcon.INVOICE.create()),
         new SideNavItem("Customers", "/customers", VaadinIcon.USER_CHECK.create()),
         new SideNavItem("Products", "/products", VaadinIcon.PACKAGE.create())
     );

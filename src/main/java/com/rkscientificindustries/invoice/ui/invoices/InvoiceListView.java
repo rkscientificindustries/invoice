@@ -5,7 +5,7 @@ import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
-import com.rkscientificindustries.invoice.ui.utils.AppConstants;
+import com.rkscientificindustries.invoice.ui.utils.InvoiceUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -14,80 +14,54 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.masterdetaillayout.MasterDetailLayout;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
-
 @PageTitle("Invoices")
 @Route(value = "invoices", layout = MainLayout.class)
-public class InvoiceListView extends MasterDetailLayout {
+public class InvoiceListView extends VerticalLayout {
+  private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
+
   private final InvoiceService invoiceService;
   private final CustomerService customerService;
-  private final Grid<Invoice> grid = new Grid<>(Invoice.class, false);
-  private final ListDataProvider<Invoice> dataProvider;
-  private final InvoiceEditor editor;
-  private final Map<Invoice, Integer> rowIndexMap = new HashMap<>();
 
-  public InvoiceListView(InvoiceService invoiceService, CustomerService customerService, InvoiceEditor editor) {
+  private final Grid<Invoice> grid = new Grid<>(Invoice.class, false);
+  private final Map<Invoice, Integer> rowIndexMap = new HashMap<>();
+  private ListDataProvider<Invoice> dataProvider;
+
+  public InvoiceListView(InvoiceService invoiceService, CustomerService customerService) {
     this.invoiceService = invoiceService;
     this.customerService = customerService;
-    this.editor = editor;
 
     setSizeFull();
+    setPadding(false);
+    setSpacing(false);
 
-    var masterContent = new VerticalLayout();
-    masterContent.setSizeFull();
-    masterContent.setPadding(false);
-    masterContent.setSpacing(false);
+    add(buildToolbar());
+    add(buildGrid());
+    setFlexGrow(1, grid);
+  }
 
-    grid.setSizeFull();
-    configureGrid();
+  private HorizontalLayout buildToolbar() {
+    var newBtn = new Button("New Invoice", new Icon(VaadinIcon.PLUS), _ ->
+        InvoiceView.navigateTo(null)
+    );
+    newBtn.addThemeVariants(ButtonVariant.PRIMARY);
+    newBtn.setId("new-invoice-btn");
 
-    var addBtn = new Button("Add Invoice", new Icon(VaadinIcon.PLUS), _ -> {
-      var invoice = Invoice.builder()
-          .invoiceDate(LocalDate.now())
-          .transport(Invoice.Transport.COURIER)
-          .packageCount(1)
-          .build();
-      openInvoiceEditor(invoice);
-    });
-    addBtn.addThemeVariants(ButtonVariant.PRIMARY);
-
-    var toolbar = new HorizontalLayout(addBtn);
+    var toolbar = new HorizontalLayout(newBtn);
     toolbar.setWidthFull();
     toolbar.setPadding(true);
-    toolbar.setJustifyContentMode(HorizontalLayout.JustifyContentMode.END);
-
-    masterContent.add(toolbar, grid);
-    masterContent.setFlexGrow(1, grid);
-
-    setMaster(masterContent);
-
-    editor.setOnSave(this::saveInvoice);
-    editor.setOnCancel(this::closeDetail);
-
-    setDetail(null);
-
-    dataProvider = new ListDataProvider<>(invoiceService.findAll());
-    updateRowIndices();
-    grid.setDataProvider(dataProvider);
-
-    setMasterMinSize(AppConstants.MASTER_MIN_WIDTH);
-    setDetailSize(AppConstants.DETAIL_WIDTH_WIDE);
-
-    addBackdropClickListener(_ -> closeDetail());
-    addDetailEscapePressListener(_ -> closeDetail());
+    toolbar.setJustifyContentMode(JustifyContentMode.END);
+    toolbar.getStyle().set("border-bottom", "1px solid var(--vaadin-border-color-secondary)");
+    return toolbar;
   }
 
   private void updateRowIndices() {
@@ -98,54 +72,57 @@ public class InvoiceListView extends MasterDetailLayout {
     }
   }
 
-  private void configureGrid() {
-    grid.addThemeVariants(GridVariant.ROW_STRIPES);
-    grid.addComponentColumn(invoice -> {
-          var index = rowIndexMap.get(invoice);
-          return new Span(index != null ? String.valueOf(index) : "");
-        })
-        .setHeader("#")
-        .setFlexGrow(0)
-        .setWidth(AppConstants.INDEX_COLUMN_WIDTH);
+  private Grid<Invoice> buildGrid() {
+    dataProvider = new ListDataProvider<>(invoiceService.findAll());
+    updateRowIndices();
 
-    grid.addColumn(Invoice::getInvoiceNumber).setHeader("Invoice #");
-    grid.addColumn(Invoice::getInvoiceDate).setHeader("Date");
+    grid.addThemeVariants(GridVariant.ROW_STRIPES);
+    grid.setSizeFull();
+
+    // # index column (uses a pre-built map to avoid per-row DB overhead)
+    grid.addComponentColumn(invoice -> {
+      var index = rowIndexMap.get(invoice);
+      return new Span(index != null ? String.valueOf(index) : "");
+    }).setHeader("#").setFlexGrow(0).setWidth("60px");
+
+    grid.addColumn(Invoice::getInvoiceNumber)
+        .setHeader("Invoice #")
+        .setSortable(true)
+        .setAutoWidth(true);
+
     grid.addColumn(invoice -> {
-      if (invoice.getBilledTo() == null) return "-";
+      if (invoice.getBilledTo() == null) return "—";
       return customerService.findById(invoice.getBilledTo())
           .map(Customer::getName)
           .orElse("Unknown");
-    }).setHeader("Billed To");
-    grid.addColumn(Invoice::getTotalAmount).setHeader("Total").setTextAlign(ColumnTextAlign.END);
+    }).setHeader("Customer").setAutoWidth(true);
 
-    grid.addSelectionListener(selection -> selection
-        .getFirstSelectedItem()
-        .ifPresentOrElse(
-            this::openInvoiceEditor,
-            this::closeDetail
-        ));
-  }
+    grid.addColumn(invoice -> invoice.getInvoiceDate() != null ? invoice.getInvoiceDate().format(DATE_FMT) : "—"
+    ).setHeader("Invoice Date").setAutoWidth(true);
 
-  private void openInvoiceEditor(Invoice invoice) {
-    editor.setInvoice(invoice);
-    var scroller = new Scroller(editor);
-    scroller.setScrollDirection(Scroller.ScrollDirection.VERTICAL);
-    scroller.setSizeFull();
-    setDetail(scroller);
-  }
+    grid.addColumn(invoice -> invoice.getDueDate() != null ? invoice.getDueDate().format(DATE_FMT) : "—"
+    ).setHeader("Due Date").setAutoWidth(true);
 
-  private void saveInvoice(Invoice invoice) {
-    var saved = invoiceService.save(invoice);
-    dataProvider.getItems().removeIf(i -> i.getId() != null && i.getId().equals(saved.getId()));
-    dataProvider.getItems().add(invoice);
-    updateRowIndices();
-    dataProvider.refreshAll();
-    closeDetail();
-    showNotification("Invoice saved successfully", NotificationVariant.SUCCESS);
-  }
+    grid.addColumn(Invoice::getSubtotal)
+        .setHeader("Tax Excl.")
+        .setTextAlign(ColumnTextAlign.END)
+        .setAutoWidth(true);
 
-  private void closeDetail() {
-    setDetail(null);
-    grid.asSingleSelect().clear();
+    grid.addColumn(Invoice::getTotalAmount)
+        .setHeader("Total")
+        .setTextAlign(ColumnTextAlign.END)
+        .setAutoWidth(true);
+
+    grid.addComponentColumn(invoice -> InvoiceUtils.buildStatusBadge(invoice.getStatus()))
+        .setHeader("Status")
+        .setAutoWidth(true);
+
+    grid.setDataProvider(dataProvider);
+
+    grid.addItemClickListener(event ->
+        InvoiceView.navigateTo(event.getItem().getId())
+    );
+
+    return grid;
   }
 }

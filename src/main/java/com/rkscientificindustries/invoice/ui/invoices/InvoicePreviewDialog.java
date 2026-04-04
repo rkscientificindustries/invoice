@@ -1,4 +1,4 @@
-package com.rkscientificindustries.invoice.ui.invoices.newflow;
+package com.rkscientificindustries.invoice.ui.invoices;
 
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;

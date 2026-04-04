@@ -1,4 +1,4 @@
-package com.rkscientificindustries.invoice.ui.invoices.newflow;
+package com.rkscientificindustries.invoice.ui.invoices;
 
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
@@ -57,8 +57,8 @@ import java.util.Map;
 import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 @PageTitle("Invoice")
-@Route(value = "invoices-new/details/:invoiceId?", layout = MainLayout.class)
-public class NewInvoiceView extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "invoices/details/:invoiceId?", layout = MainLayout.class)
+public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   // ── Services ─────────────────────────────────────────────────────
   private final InvoiceService invoiceService;
   private final CustomerService customerService;
@@ -97,8 +97,8 @@ public class NewInvoiceView extends VerticalLayout implements BeforeEnterObserve
   private Button revertBtn;
   private Button saveDraftBtn;
 
-  public NewInvoiceView(InvoiceService invoiceService, CustomerService customerService,
-                        ProductService productService, InvoicePdfService pdfService) {
+  public InvoiceView(InvoiceService invoiceService, CustomerService customerService,
+                     ProductService productService, InvoicePdfService pdfService) {
     this.invoiceService = invoiceService;
     this.customerService = customerService;
     this.productService = productService;
@@ -111,9 +111,9 @@ public class NewInvoiceView extends VerticalLayout implements BeforeEnterObserve
 
   public static void navigateTo(Long invoiceId) {
     if (invoiceId != null) {
-      UI.getCurrent().navigate(NewInvoiceView.class, new RouteParameters("invoiceId", invoiceId.toString()));
+      UI.getCurrent().navigate(InvoiceView.class, new RouteParameters("invoiceId", invoiceId.toString()));
     } else {
-      UI.getCurrent().navigate(NewInvoiceView.class);
+      UI.getCurrent().navigate(InvoiceView.class);
     }
   }
 
@@ -173,7 +173,7 @@ public class NewInvoiceView extends VerticalLayout implements BeforeEnterObserve
     var breadcrumb = new Span();
     breadcrumb.getStyle().set("color", "var(--vaadin-text-color-secondary)")
         .set("font-size", "var(--aura-font-size-s)");
-    var backLink = new Anchor("invoices-new", "Invoices");
+    var backLink = new Anchor("invoices", "Invoices");
     backLink.getStyle().set("color", "var(--vaadin-color-primary)");
     breadcrumb.add(backLink, new Span(" › "), new Span(
         currentInvoice.getInvoiceNumber() != null ? currentInvoice.getInvoiceNumber() : "New"
