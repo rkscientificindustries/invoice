@@ -62,8 +62,6 @@ public class Invoice {
   @DecimalMin(value = "0.0")
   private BigDecimal totalAmount;
 
-  private LocalDate dueDate;
-
   @Builder.Default
   private InvoiceStatus status = InvoiceStatus.DRAFT;
 
@@ -77,14 +75,6 @@ public class Invoice {
 
   @Version
   int version;
-
-  public void addLineItem(LineItem item) {
-    this.items.add(item);
-  }
-
-  public void removeLineItem(LineItem item) {
-    this.items.remove(item);
-  }
 
   public enum Transport {
     SELF, COURIER

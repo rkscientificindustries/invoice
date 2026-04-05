@@ -99,9 +99,6 @@ public class InvoiceListView extends VerticalLayout {
     grid.addColumn(invoice -> invoice.getInvoiceDate() != null ? invoice.getInvoiceDate().format(DATE_FMT) : "—"
     ).setHeader("Invoice Date").setAutoWidth(true);
 
-    grid.addColumn(invoice -> invoice.getDueDate() != null ? invoice.getDueDate().format(DATE_FMT) : "—"
-    ).setHeader("Due Date").setAutoWidth(true);
-
     grid.addColumn(Invoice::getSubtotal)
         .setHeader("Tax Excl.")
         .setTextAlign(ColumnTextAlign.END)

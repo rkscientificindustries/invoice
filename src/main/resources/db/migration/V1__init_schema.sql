@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS invoices
     discount_percentage  DECIMAL(5, 2)           DEFAULT 0,
     total_tax            DECIMAL(12, 2) NOT NULL DEFAULT 0,
     total_amount         DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    due_date             DATE,
     status               VARCHAR(20)    NOT NULL DEFAULT 'DRAFT',
     terms_and_conditions TEXT,
     created_date         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,

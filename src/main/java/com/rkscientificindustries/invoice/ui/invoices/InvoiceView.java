@@ -75,8 +75,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   private Div customerAddressBlock;
   private DatePicker invoiceDatePicker;
   private TextField invoiceNumberField;
-  private DatePicker dueDatePicker;
-  private Select<DueTerm> dueTermSelect;
   private Grid<LineItemRow> lineGrid;
 
   // ── Other info ─────────────────────────────────────────────────────
@@ -257,18 +255,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     invoiceDatePicker.setId("invoice-date-picker");
     invoiceDatePicker.setValue(currentInvoice.getInvoiceDate() != null ? currentInvoice.getInvoiceDate() : LocalDate.now());
 
-    dueDatePicker = new DatePicker("Due Date");
-    dueDatePicker.setId("due-date-picker");
-    if (currentInvoice.getDueDate() != null) dueDatePicker.setValue(currentInvoice.getDueDate());
-
-    dueTermSelect = new Select<>();
-    dueTermSelect.setLabel("Terms");
-    dueTermSelect.setItems(DueTerm.values());
-    dueTermSelect.setItemLabelGenerator(DueTerm::getLabel);
-    dueTermSelect.setId("due-term-select");
-    dueTermSelect.addValueChangeListener(e -> applyDueTerm(e.getValue()));
-
-    var rightForm = new FormLayout(invoiceNumberField, invoiceDatePicker, dueDatePicker, dueTermSelect);
+    var rightForm = new FormLayout(invoiceNumberField, invoiceDatePicker);
     rightForm.setWidth("50%");
 
     var header = new HorizontalLayout(leftLayout, rightForm);
@@ -531,21 +518,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     return row;
   }
 
-  // ── Due term helper ───────────────────────────────────────────────
-  private void applyDueTerm(DueTerm term) {
-    if (term == null) return;
-    var base = invoiceDatePicker.getValue() != null ? invoiceDatePicker.getValue() : LocalDate.now();
-    var due = switch (term) {
-      case IMMEDIATE -> base;
-      case DAYS_15 -> base.plusDays(15);
-      case DAYS_30 -> base.plusDays(30);
-      case DAYS_45 -> base.plusDays(45);
-      case DAYS_60 -> base.plusDays(60);
-      case END_OF_MONTH -> base.withDayOfMonth(base.lengthOfMonth());
-    };
-    dueDatePicker.setValue(due);
-  }
-
   // ── Actions ───────────────────────────────────────────────────────
   private void saveDraft() {
     collectFormData();
@@ -583,7 +555,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   private void collectFormData() {
     currentInvoice.setInvoiceNumber(invoiceNumberField.getValue());
     currentInvoice.setInvoiceDate(invoiceDatePicker.getValue());
-    currentInvoice.setDueDate(dueDatePicker.getValue());
 
     Customer sel = customerCombo.getValue();
     currentInvoice.setBilledTo(sel != null ? sel.getId() : null);
@@ -617,8 +588,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     if (customerCombo != null) customerCombo.setReadOnly(isFinalized);
     if (invoiceNumberField != null) invoiceNumberField.setReadOnly(isFinalized);
     if (invoiceDatePicker != null) invoiceDatePicker.setReadOnly(isFinalized);
-    if (dueDatePicker != null) dueDatePicker.setReadOnly(isFinalized);
-    if (dueTermSelect != null) dueTermSelect.setEnabled(!isFinalized);
     if (transportSelect != null) transportSelect.setEnabled(!isFinalized);
     if (courierNameField != null) courierNameField.setReadOnly(isFinalized);
     if (vehicleNumberField != null) vehicleNumberField.setReadOnly(isFinalized);
@@ -649,21 +618,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
   // ── Inner types ───────────────────────────────────────────────────
 
-  @Getter
-  enum DueTerm {
-    IMMEDIATE("Immediate"),
-    DAYS_15("15 Days"),
-    DAYS_30("30 Days"),
-    DAYS_45("45 Days"),
-    DAYS_60("60 Days"),
-    END_OF_MONTH("End of Month");
-
-    private final String label;
-
-    DueTerm(String label) {
-      this.label = label;
-    }
-  }
 
   /// In-memory mutable DTO for one line of the invoice (not an entity).
   @Getter

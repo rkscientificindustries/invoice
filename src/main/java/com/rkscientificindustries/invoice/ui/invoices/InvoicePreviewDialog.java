@@ -97,13 +97,12 @@ public class InvoicePreviewDialog extends Dialog {
     content.add(topRow);
     content.add(new Hr());
 
-    // Meta row
+    // Meta-row
     var invNo = styledPair("Invoice No:", invoice.getInvoiceNumber() != null ? invoice.getInvoiceNumber() : "—");
     var invDate = styledPair("Invoice Date:", invoice.getInvoiceDate() != null ? invoice.getInvoiceDate()
         .format(DATE_FMT) : "—");
-    var dueDate = styledPair("Due Date:", invoice.getDueDate() != null ? invoice.getDueDate().format(DATE_FMT) : "—");
 
-    var metaRow = new HorizontalLayout(invNo, invDate, dueDate);
+    var metaRow = new HorizontalLayout(invNo, invDate);
     metaRow.setSpacing(true);
     metaRow.getStyle().set("margin", "12px 0");
     content.add(metaRow);

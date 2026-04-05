@@ -29,7 +29,7 @@ public class InvoicePdfService {
   private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final String CURRENCY = "₹";
 
-  // Company details — can be extracted to @ConfigurationProperties later
+  // Company details can be extracted to @ConfigurationProperties later
   private static final String COMPANY_NAME = "RK Scientific Industries";
   private static final String COMPANY_ADDRESS = "21 A, Mahesh Nagar, Near Sheetla Mata Mandir";
   private static final String COMPANY_CITY = "Ambala Cantt – 133001";
@@ -115,7 +115,7 @@ public class InvoicePdfService {
       }
 
       BigDecimal untaxedTotal = BigDecimal.ZERO;
-      // slab → amount  (e.g. "5%" → sum)
+      // slab → amount (e.g. "5%" → sum)
       Map<String, BigDecimal> taxSlabs = new TreeMap<>();
 
       for (LineItem item : invoice.getItems()) {
@@ -204,9 +204,6 @@ public class InvoicePdfService {
         .append("\n");
     if (invoice.getInvoiceDate() != null) {
       sb.append("Invoice Date: ").append(invoice.getInvoiceDate().format(DATE_FMT)).append("\n");
-    }
-    if (invoice.getDueDate() != null) {
-      sb.append("Due Date: ").append(invoice.getDueDate().format(DATE_FMT)).append("\n");
     }
     var cell = new PdfPCell(new Phrase(sb.toString(), fontSmall));
     cell.setBorder(Rectangle.NO_BORDER);
