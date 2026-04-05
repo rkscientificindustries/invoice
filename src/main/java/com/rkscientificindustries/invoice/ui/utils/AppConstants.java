@@ -18,4 +18,10 @@ public final class AppConstants {
   // Business Defaults
   public static final BigDecimal DEFAULT_GST_RATE = BigDecimal.valueOf(18);
   public static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
+  public static final String DEFAULT_TERMS = """
+      E&OE
+      1. Goods are once sold will not be taken back
+      2. Interest @18% p.a. will be charged if the payment is not made with in the stipulated time.
+      3. Subject to 'Haryana' Jurisdiction only
+      """.stripTrailing();
 }

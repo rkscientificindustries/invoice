@@ -65,8 +65,6 @@ public class Invoice {
   @Builder.Default
   private InvoiceStatus status = InvoiceStatus.DRAFT;
 
-  private String termsAndConditions;
-
   @CreatedDate
   private Instant createdDate;
 

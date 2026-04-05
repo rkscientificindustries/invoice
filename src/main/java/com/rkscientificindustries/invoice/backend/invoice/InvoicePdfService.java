@@ -13,6 +13,7 @@ import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.product.Product;
+import org.openpdf.text.pdf.draw.LineSeparator;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -45,7 +46,7 @@ public class InvoicePdfService {
   private final Font fontTotalLbl = new Font(Font.HELVETICA, 10, Font.BOLD, Color.BLACK);
   private final Font fontTotalVal = new Font(Font.HELVETICA, 10, Font.BOLD, new Color(30, 100, 50));
 
-  public byte[] generatePdf(Invoice invoice, Customer customer, List<Product> products) {
+  public byte[] generatePdf(Invoice invoice, Customer customer, List<Product> products, String termsAndConditions) {
     try (var out = new ByteArrayOutputStream()) {
       var document = new Document(PageSize.A4, 36, 36, 54, 36);
       PdfWriter.getInstance(document, out);
@@ -74,10 +75,7 @@ public class InvoicePdfService {
       document.add(companyTable);
 
       // Divider
-      var divider = new Paragraph(" ");
-      divider.setSpacingBefore(2);
-      divider.setSpacingAfter(2);
-      document.add(new Chunk(new org.openpdf.text.pdf.draw.LineSeparator(0.5f, 100, Color.LIGHT_GRAY, Element.ALIGN_CENTER, -2)));
+      document.add(new Chunk(new LineSeparator(0.5f, 100, Color.LIGHT_GRAY, Element.ALIGN_CENTER, -2)));
 
       // ── Billed To ────────────────────────────────────────────
       var billedTable = new PdfPTable(1);
@@ -172,14 +170,13 @@ public class InvoicePdfService {
 
       document.add(totalsTable);
 
-      // ── Terms & Conditions ────────────────────────────────────
-      if (invoice.getTermsAndConditions() != null && !invoice.getTermsAndConditions().isBlank()) {
-        document.add(new Chunk(new org.openpdf.text.pdf.draw.LineSeparator(0.5f, 100, Color.LIGHT_GRAY, Element.ALIGN_CENTER, -2)));
+      if (termsAndConditions != null && !termsAndConditions.isBlank()) {
+        document.add(new Chunk(new LineSeparator(0.5f, 100, Color.LIGHT_GRAY, Element.ALIGN_CENTER, -2)));
         var tnc = new Paragraph("Terms & Conditions", fontBold);
         tnc.setSpacingBefore(8);
         tnc.setSpacingAfter(4);
         document.add(tnc);
-        document.add(new Paragraph(invoice.getTermsAndConditions(), fontNormal));
+        document.add(new Paragraph(termsAndConditions, fontNormal));
       }
 
       document.close();

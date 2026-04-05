@@ -11,6 +11,7 @@ import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
 import com.rkscientificindustries.invoice.ui.utils.InvoiceUtils;
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -433,9 +434,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     termsArea.setId("terms-area");
     termsArea.setWidthFull();
     termsArea.setMinHeight("120px");
-    if (currentInvoice.getTermsAndConditions() != null) {
-      termsArea.setValue(currentInvoice.getTermsAndConditions());
-    }
+    termsArea.setValue(AppConstants.DEFAULT_TERMS);
 
     var termsWrapper = new VerticalLayout(new H3("Terms & Conditions"), termsArea);
     termsWrapper.setPadding(true);
@@ -547,7 +546,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   private void openPreview() {
     collectFormData();
     Customer customer = customerCombo.getValue();
-    var dialog = new InvoicePreviewDialog(currentInvoice, customer, allProducts, pdfService);
+    var dialog = new InvoicePreviewDialog(currentInvoice, customer, allProducts, pdfService, termsArea.getValue());
     dialog.open();
   }
 
@@ -563,7 +562,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     currentInvoice.setCourierName(courierNameField.getValue());
     currentInvoice.setVehicleNumber(vehicleNumberField.getValue());
     currentInvoice.setEWayBillNumber(eWayBillField.getValue());
-    currentInvoice.setTermsAndConditions(termsArea.getValue());
 
     // Rebuild line items list from in-memory rows
     // The order of insertion into this list determines the `line_order` in the database.

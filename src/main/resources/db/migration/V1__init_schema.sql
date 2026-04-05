@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS invoices
     total_tax            DECIMAL(12, 2) NOT NULL DEFAULT 0,
     total_amount         DECIMAL(12, 2) NOT NULL DEFAULT 0,
     status               VARCHAR(20)    NOT NULL DEFAULT 'DRAFT',
-    terms_and_conditions TEXT,
     created_date         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date   TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version              INTEGER        NOT NULL DEFAULT 0

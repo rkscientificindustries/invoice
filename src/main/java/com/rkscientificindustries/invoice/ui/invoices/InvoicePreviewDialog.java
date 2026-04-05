@@ -22,6 +22,9 @@ import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import org.jspecify.annotations.NonNull;
 
+import com.rkscientificindustries.invoice.ui.utils.AppConstants;
+
+import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
@@ -37,13 +40,16 @@ public class InvoicePreviewDialog extends Dialog {
   private final Customer customer;
   private final List<Product> products;
   private final InvoicePdfService pdfService;
+  private final String termsAndConditions;
 
   public InvoicePreviewDialog(Invoice invoice, Customer customer,
-                              List<Product> products, InvoicePdfService pdfService) {
+                              List<Product> products, InvoicePdfService pdfService,
+                              @NonNull String termsAndConditions) {
     this.invoice = invoice;
     this.customer = customer;
     this.products = products;
     this.pdfService = pdfService;
+    this.termsAndConditions = termsAndConditions.isBlank() ? AppConstants.DEFAULT_TERMS : termsAndConditions;
 
     setWidth("800px");
     setMaxHeight("90vh");
@@ -131,13 +137,11 @@ public class InvoicePreviewDialog extends Dialog {
     content.add(buildTotalsBlock());
 
     // Terms
-    if (invoice.getTermsAndConditions() != null && !invoice.getTermsAndConditions().isBlank()) {
-      content.add(new Hr());
-      content.add(styledSpan("Terms & Conditions", "12px", "#555", true));
-      var tnc = styledSpan(invoice.getTermsAndConditions(), "12px", "#555", false);
-      tnc.getStyle().set("white-space", "pre-wrap");
-      content.add(tnc);
-    }
+    content.add(new Hr());
+    content.add(styledSpan("Terms & Conditions", "12px", "#555", true));
+    var tnc = styledSpan(termsAndConditions, "12px", "#555", false);
+    tnc.getStyle().set("white-space", "pre-wrap");
+    content.add(tnc);
 
     return content;
   }
@@ -290,14 +294,13 @@ public class InvoicePreviewDialog extends Dialog {
     var downloadAnchor = new Anchor(
         DownloadHandler.fromInputStream(_ -> {
           try {
-            byte[] pdfBytes = pdfService.generatePdf(invoice, customer, products);
+            byte[] pdfBytes = pdfService.generatePdf(invoice, customer, products, termsAndConditions);
             String filename = "invoice-" + (invoice.getInvoiceNumber() != null
                 ? invoice.getInvoiceNumber() : "draft") + ".pdf";
-            // Constructor: new DownloadResponse(InputStream, mimeType, fileName, size)
             return new DownloadResponse(
-                new java.io.ByteArrayInputStream(pdfBytes),
-                "application/pdf",
+                new ByteArrayInputStream(pdfBytes),
                 filename,
+                "application/pdf",
                 pdfBytes.length
             );
           } catch (Exception e) {
