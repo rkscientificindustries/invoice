@@ -20,15 +20,14 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.rkscientificindustries.invoice.ui.utils.AppConstants.DATE_FMT;
 
 @PageTitle("Invoices")
 @Route(value = "invoices", layout = MainLayout.class)
 public class InvoiceListView extends VerticalLayout {
-  private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
-
   private final InvoiceService invoiceService;
   private final CustomerService customerService;
 

@@ -1,1 +1,10 @@
-/*@import "@vaadin/aura/aura.css";*/
+@media (max-width: 576px) {
+  .quick-actions .action-label {
+    display: none;
+  }
+
+  .quick-actions vaadin-button[aria-label] {
+    min-width: 44px;
+    padding-inline: var(--lumo-space-s);
+  }
+}

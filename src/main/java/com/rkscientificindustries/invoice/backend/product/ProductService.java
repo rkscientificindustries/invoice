@@ -2,7 +2,6 @@ package com.rkscientificindustries.invoice.backend.product;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -44,15 +43,5 @@ public class ProductService {
   @Transactional(readOnly = true)
   public Optional<Product> findById(Long id) {
     return productRepository.findById(id);
-  }
-
-  @Transactional(readOnly = true)
-  public List<Product> findByName(String name, Pageable pageable) {
-    return productRepository.findByNameContainingIgnoreCaseOrderByName(name, pageable);
-  }
-
-  @Transactional(readOnly = true)
-  public int countByName(String name) {
-    return productRepository.countByNameContainingIgnoreCase(name);
   }
 }

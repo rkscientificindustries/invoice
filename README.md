@@ -7,6 +7,8 @@
 
 A modern Spring Boot application designed to manage business workflows: Customers, Products, and Invoices. It features a rich, responsive web interface built with Vaadin.
 
+The home route (`/`) opens an admin dashboard with three monetary KPI cards (This Month Invoice Value, Total Invoice Value, and Average Invoice Value), quick links into the main workflows, and a Recent Invoices section.
+
 ## 🛠 Tech Stack
 - **Core**: Java 25, Spring Boot 4.0.0
 - **UI Framework**: Vaadin 25.1.0 (Server-side, Java-based components)

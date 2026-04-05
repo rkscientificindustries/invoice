@@ -1,6 +1,7 @@
 package com.rkscientificindustries.invoice.ui.utils;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 
 public final class AppConstants {
   private AppConstants() {}
@@ -10,10 +11,11 @@ public final class AppConstants {
   public static final String MASTER_MIN_WIDTH = "400px";
   public static final String DETAIL_WIDTH_NARROW = "500px";
   public static final String DETAIL_WIDTH_WIDE = "600px";
-  
+
   // Grid Columns
   public static final String INDEX_COLUMN_WIDTH = "64px";
 
   // Business Defaults
   public static final BigDecimal DEFAULT_GST_RATE = BigDecimal.valueOf(18);
+  public static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
 }
