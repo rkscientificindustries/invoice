@@ -4,8 +4,7 @@
   }
 
   .quick-actions vaadin-button[aria-label] {
-    min-width: 44px;
-    padding-inline: var(--lumo-space-s);
+    padding-inline: var(--vaadin-padding-m);
   }
 }
 
