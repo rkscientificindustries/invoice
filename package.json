@@ -3,6 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@vaadin-component-factory/vcf-breadcrumb": "3.0.1",
     "@vaadin/aura": "25.1.0",
     "@vaadin/common-frontend": "0.0.22",
     "@vaadin/react-components": "25.1.0",
@@ -37,6 +38,7 @@
   },
   "vaadin": {
     "dependencies": {
+      "@vaadin-component-factory/vcf-breadcrumb": "3.0.1",
       "@vaadin/aura": "25.1.0",
       "@vaadin/common-frontend": "0.0.22",
       "@vaadin/react-components": "25.1.0",
@@ -69,7 +71,7 @@
       "vite-plugin-checker": "0.12.0",
       "workbox-build": "7.4.0"
     },
-    "hash": "9e5e2d2937152d5062a4fdac07a8cb81ed7f4ad01d00388c2950ecff4b1cf14b"
+    "hash": "f1b13f24a4b66500e6491b218f2d51c16e078f8d99280bae369704d89e03fa93"
   },
   "overrides": {
     "@vaadin/vaadin-development-mode-detector": "$@vaadin/vaadin-development-mode-detector",
@@ -144,6 +146,7 @@
     "@vaadin/tooltip": "25.1.0",
     "@vaadin/upload": "25.1.0",
     "@vaadin/vertical-layout": "25.1.0",
-    "@vaadin/virtual-list": "25.1.0"
+    "@vaadin/virtual-list": "25.1.0",
+    "@vaadin-component-factory/vcf-breadcrumb": "$@vaadin-component-factory/vcf-breadcrumb"
   }
 }

@@ -23,6 +23,7 @@ configurations {
 
 repositories {
   mavenCentral()
+  maven("https://maven.vaadin.com/vaadin-addons")
 }
 
 extra["vaadinVersion"] = "25.1.1"
@@ -36,6 +37,7 @@ dependencies {
   implementation("org.flywaydb:flyway-database-postgresql")
   implementation("com.vaadin:vaadin-spring-boot-starter")
   implementation("com.github.librepdf:openpdf:3.0.3")
+  implementation("com.vaadin.componentfactory:breadcrumb:4.0.1")
 
   developmentOnly("com.vaadin:vaadin-dev")
   developmentOnly("org.springframework.boot:spring-boot-devtools")

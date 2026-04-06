@@ -12,6 +12,8 @@ import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
 import com.rkscientificindustries.invoice.ui.utils.InvoiceUtils;
 import com.rkscientificindustries.invoice.ui.utils.AppConstants;
+import com.vaadin.componentfactory.Breadcrumb;
+import com.vaadin.componentfactory.Breadcrumbs;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -169,14 +171,12 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
   // ── Action bar ─────────────────────────────────────────────────────
   private HorizontalLayout buildActionBar() {
-    var breadcrumb = new Span();
-    breadcrumb.getStyle().set("color", "var(--vaadin-text-color-secondary)")
-        .set("font-size", "var(--aura-font-size-s)");
-    var backLink = new Anchor("invoices", "Invoices");
-    backLink.getStyle().set("color", "var(--vaadin-color-primary)");
-    breadcrumb.add(backLink, new Span(" › "), new Span(
-        currentInvoice.getInvoiceNumber() != null ? currentInvoice.getInvoiceNumber() : "New"
-    ));
+    var breadcrumbs = new Breadcrumbs();
+    breadcrumbs.addClassName("styled-breadcrumb");
+    breadcrumbs.add(
+        new Breadcrumb("Invoices", "invoices"),
+        new Breadcrumb(currentInvoice.getInvoiceNumber() != null ? currentInvoice.getInvoiceNumber() : "New")
+    );
 
     statusBadge = InvoiceUtils.buildStatusBadge(currentInvoice.getStatus());
 
@@ -198,7 +198,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     right.setAlignItems(FlexComponent.Alignment.CENTER);
     right.setSpacing(true);
 
-    var bar = new HorizontalLayout(breadcrumb, right);
+    var bar = new HorizontalLayout(breadcrumbs, right);
     bar.setWidthFull();
     bar.setAlignItems(FlexComponent.Alignment.CENTER);
     bar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);

@@ -8,3 +8,7 @@
     padding-inline: var(--lumo-space-s);
   }
 }
+
+.styled-breadcrumb .breadcrumb-anchor {
+	text-decoration: none;
+}
