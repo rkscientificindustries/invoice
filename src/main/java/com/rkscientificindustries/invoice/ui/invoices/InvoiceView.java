@@ -545,8 +545,15 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
   private void openPreview() {
     collectFormData();
-    Customer customer = customerCombo.getValue();
-    var dialog = new InvoicePreviewDialog(currentInvoice, customer, allProducts, pdfService, termsArea.getValue());
+    Customer billedCustomer = customerCombo.getValue();
+    Customer shippedCustomer = null;
+    if (currentInvoice.getShippedTo() != null) {
+      shippedCustomer = allCustomers.stream()
+          .filter(c -> c.getId().equals(currentInvoice.getShippedTo()))
+          .findFirst()
+          .orElse(null);
+    }
+    var dialog = new InvoicePreviewDialog(currentInvoice, billedCustomer, shippedCustomer, allProducts, pdfService, termsArea.getValue());
     dialog.open();
   }
 
