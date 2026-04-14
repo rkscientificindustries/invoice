@@ -387,10 +387,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     transportSelect = new Select<>();
     transportSelect.setLabel("Transport");
     transportSelect.setItems(Invoice.Transport.values());
-    transportSelect.setItemLabelGenerator(t -> switch (t) {
-      case SELF -> "Self";
-      case COURIER -> "Courier";
-    });
+    transportSelect.setItemLabelGenerator(Invoice.Transport::displayName);
     transportSelect.setId("transport-select");
     if (currentInvoice.getTransport() != null) transportSelect.setValue(currentInvoice.getTransport());
 

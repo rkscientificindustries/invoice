@@ -75,6 +75,17 @@ public class Invoice {
   int version;
 
   public enum Transport {
-    SELF, COURIER
+    SELF("Self"),
+    COURIER("Courier");
+
+    private final String displayName;
+
+    Transport(String displayName) {
+      this.displayName = displayName;
+    }
+
+    public String displayName() {
+      return displayName;
+    }
   }
 }
