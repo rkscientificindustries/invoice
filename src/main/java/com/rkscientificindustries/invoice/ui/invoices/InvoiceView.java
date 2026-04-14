@@ -21,10 +21,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
@@ -60,6 +60,7 @@ import java.util.Map;
 import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotification;
 
 @PageTitle("Invoice")
+@StyleSheet("invoice-view.css")
 @Route(value = "invoices/details/:invoiceId?", layout = MainLayout.class)
 public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   // ── Services ─────────────────────────────────────────────────────
@@ -105,6 +106,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     this.productService = productService;
     this.pdfService = pdfService;
 
+    addClassName("invoice-view");
     setSizeFull();
     setPadding(false);
     setSpacing(false);
@@ -202,11 +204,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     bar.setWidthFull();
     bar.setAlignItems(FlexComponent.Alignment.CENTER);
     bar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-    bar.getStyle()
-        .set("background", "var(--vaadin-background-color)")
-        .set("border-radius", "var(--vaadin-radius-l)")
-        .set("padding", "var(--vaadin-padding-m)")
-        .set("box-shadow", "0 1px 4px rgba(0,0,0,.12)");
+    bar.addClassNames("invoice-card", "invoice-card-padded");
     return bar;
   }
 
@@ -220,11 +218,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     customerCombo.setId("customer-combo");
 
     customerAddressBlock = new Div();
-    customerAddressBlock.getStyle()
-        .set("color", "var(--vaadin-text-color-secondary)")
-        .set("font-size", "var(--aura-font-size-s)")
-        .set("white-space", "pre-line")
-        .set("min-height", "60px");
+    customerAddressBlock.addClassName("customer-address-block");
 
     // Pre-fill if editing
     if (currentInvoice.getBilledTo() != null) {
@@ -245,7 +239,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     var leftLayout = new VerticalLayout(customerCombo, customerAddressBlock);
     leftLayout.setPadding(false);
     leftLayout.setSpacing(false);
-    leftLayout.setWidth("50%");
+    leftLayout.addClassName("invoice-half-width");
 
     // RIGHT — invoice meta
     invoiceNumberField = new TextField("Invoice Number");
@@ -257,16 +251,12 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     invoiceDatePicker.setValue(currentInvoice.getInvoiceDate() != null ? currentInvoice.getInvoiceDate() : LocalDate.now());
 
     var rightForm = new FormLayout(invoiceNumberField, invoiceDatePicker);
-    rightForm.setWidth("50%");
+    rightForm.addClassName("invoice-half-width");
 
     var header = new HorizontalLayout(leftLayout, rightForm);
     header.setWidthFull();
     header.setAlignItems(FlexComponent.Alignment.START);
-    header.getStyle()
-        .set("background", "var(--vaadin-background-color)")
-        .set("border-radius", "var(--vaadin-radius-l)")
-        .set("padding", "var(--vaadin-padding-m)")
-        .set("box-shadow", "0 1px 4px rgba(0,0,0,.12)");
+    header.addClassNames("invoice-card", "invoice-card-padded");
     return header;
   }
 
@@ -280,10 +270,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
     var wrapper = new Div(tabSheet);
     wrapper.setWidthFull();
-    wrapper.getStyle()
-        .set("background", "var(--vaadin-background-color)")
-        .set("border-radius", "var(--vaadin-radius-l)")
-        .set("box-shadow", "0 1px 4px rgba(0,0,0,.12)");
+    wrapper.addClassName("invoice-card");
     return wrapper;
   }
 
@@ -438,19 +425,11 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
     var termsWrapper = new VerticalLayout(new H3("Terms & Conditions"), termsArea);
     termsWrapper.setPadding(true);
-    termsWrapper.setWidth("50%");
-    termsWrapper.getStyle()
-        .set("background", "var(--vaadin-background-color)")
-        .set("border-radius", "var(--vaadin-radius-l)")
-        .set("box-shadow", "0 1px 4px rgba(0,0,0,.12)");
+    termsWrapper.addClassNames("invoice-half-width", "invoice-card");
 
     totalsSection = new VerticalLayout();
     totalsSection.setPadding(true);
-    totalsSection.setWidth("50%");
-    totalsSection.getStyle()
-        .set("background", "var(--vaadin-background-color)")
-        .set("border-radius", "var(--vaadin-radius-l)")
-        .set("box-shadow", "0 1px 4px rgba(0,0,0,.12)");
+    totalsSection.addClassNames("invoice-half-width", "invoice-card");
 
     recalculateTotals();
 
@@ -492,25 +471,23 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     var divider = new Div();
-    divider.getStyle()
-        .set("border-top", "1px solid var(--vaadin-border-color-secondary)")
-        .set("width", "100%")
-        .set("margin", "var(--vaadin-padding-xs) 0");
+    divider.addClassName("totals-divider");
     totalsSection.add(divider);
     totalsSection.add(buildTotalRow("Total", total, true));
   }
 
   private HorizontalLayout buildTotalRow(String label, BigDecimal value, boolean bold) {
     var lbl = new Span(label + ":");
+    lbl.addClassName("total-row-label");
     var val = new Span("₹ " + String.format("%,.2f", value));
-    if (bold) {
-      lbl.getStyle().set("font-weight", "bold");
-      val.getStyle().set("font-weight", "bold")
-          .set("color", "var(--vaadin-color-success-text)");
-    } else {
-      lbl.getStyle().set("color", "var(--vaadin-text-color-secondary)");
-    }
+    val.addClassName("total-row-value");
+
     var row = new HorizontalLayout(lbl, val);
+    row.addClassName("total-row");
+    if (bold) {
+      row.addClassName("total-row-bold");
+    }
+
     row.setWidthFull();
     row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
     row.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -620,22 +597,15 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
             "\nGSTIN: " + c.getGstin()
     );
   }
-
-  // ── Inner types ───────────────────────────────────────────────────
-
-
+  
   /// In-memory mutable DTO for one line of the invoice (not an entity).
   @Getter
   static class LineItemRow {
     private Long lineItemId;
-    @Setter
-    private Product product;
-    @Setter
-    private Integer quantity = 1;
-    @Setter
-    private BigDecimal unitPrice = BigDecimal.ZERO;
-    @Setter
-    private BigDecimal gstRate = BigDecimal.ZERO;
+    @Setter private Product product;
+    @Setter private Integer quantity = 1;
+    @Setter private BigDecimal unitPrice = BigDecimal.ZERO;
+    @Setter private BigDecimal gstRate = BigDecimal.ZERO;
     private BigDecimal taxAmount = BigDecimal.ZERO;
     private BigDecimal taxExclAmount = BigDecimal.ZERO;
     private BigDecimal totalAmount = BigDecimal.ZERO;
