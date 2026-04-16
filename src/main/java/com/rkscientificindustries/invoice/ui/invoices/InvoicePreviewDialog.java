@@ -8,6 +8,7 @@ import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@StyleSheet("invoice-preview-dialog.css")
 public class InvoicePreviewDialog extends Dialog {
   private final Invoice invoice;
   private final Customer billedCustomer;
@@ -64,42 +66,28 @@ public class InvoicePreviewDialog extends Dialog {
   // ── Dialog header ──────────────────────────────────────────────────
   private HorizontalLayout buildHeader() {
     var title = new H3("Invoice Preview");
-    title.getStyle().set("margin", "0");
+    title.addClassName("preview-dialog-title");
 
     var closeBtn = new Button(VaadinIcon.CLOSE.create(), _ -> close());
     closeBtn.addThemeVariants(ButtonVariant.TERTIARY);
 
     var header = new HorizontalLayout(title, closeBtn);
+    header.addClassName("preview-dialog-header");
     header.setWidthFull();
     header.setAlignItems(FlexComponent.Alignment.CENTER);
     header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-    header.getStyle()
-        .set("padding", "16px")
-        .set("border-bottom", "1px solid #e0e0e0");
     return header;
   }
 
   // ── Invoice preview (mimics A4) ───────────────────────────────────
   private VerticalLayout buildPreviewContent() {
     var content = new VerticalLayout();
-    content.getStyle()
-        .set("padding", "20px")
-        .set("background", "#f5f7f9")
-        .set("overflow-y", "auto")
-        .set("min-height", "600px");
+    content.addClassName("invoice-preview-dialog");
     content.setSpacing(false);
     content.setAlignItems(FlexComponent.Alignment.CENTER);
 
     var paper = new VerticalLayout();
-    paper.getStyle()
-        .set("width", "100%")
-        .set("max-width", "780px")
-        .set("background", "white")
-        .set("border", "1px solid #333")
-        .set("box-shadow", "0 4px 12px rgba(0,0,0,0.1)")
-        .set("padding", "0")
-        .set("color", "black")
-        .set("font-family", "'Inter', system-ui, sans-serif");
+    paper.addClassName("invoice-preview-paper");
     paper.setSpacing(false);
 
     paper.add(buildTopBar());
@@ -115,18 +103,13 @@ public class InvoicePreviewDialog extends Dialog {
 
   private Div buildTopBar() {
     var gstin = new Span("GSTIN: 06CGLPP3030J1ZC");
-    gstin.getStyle().set("font-weight", "bold").set("font-size", "11px");
+    gstin.addClassName("preview-gstin");
 
     var original = new Span("Original Copy");
-    original.getStyle().set("font-size", "11px");
+    original.addClassName("preview-original-copy");
 
     var row = new Div(gstin, original);
-    row.getStyle()
-        .set("box-sizing", "border-box")
-        .set("display", "flex")
-        .set("justify-content", "space-between")
-        .set("width", "100%")
-        .set("padding", "2px 10px");
+    row.addClassName("preview-top-bar");
     return row;
   }
 
@@ -135,60 +118,46 @@ public class InvoicePreviewDialog extends Dialog {
     logo.setHeight("80px"); // Slightly larger for better visibility
 
     var taxInvoice = new Span("TAX INVOICE");
-    taxInvoice.getStyle()
-        .set("text-decoration", "underline")
-        .set("font-weight", "bold")
-        .set("font-size", "12px")
-        .set("margin-bottom", "8px");
+    taxInvoice.addClassName("preview-tax-invoice");
 
     var titleBlock = new VerticalLayout();
+    titleBlock.addClassName("preview-title-block");
     titleBlock.setSpacing(false);
     titleBlock.setPadding(false);
     titleBlock.setAlignItems(FlexComponent.Alignment.CENTER);
 
     var companyName = new Span("R.K. SCIENTIFIC INDUSTRIES");
-    companyName.getStyle()
-        .set("font-size", "28px")
-        .set("font-weight", "800")
-        .set("letter-spacing", "1px")
-        .set("margin-bottom", "2px");
+    companyName.addClassName("preview-company-name");
 
     var address = new Span("21A, BABYAL ROAD MAHESH NAGAR, AMBALA CANTT, Ambala, Haryana, 133001");
-    address.getStyle().set("font-size", "12px");
+    address.addClassName("preview-company-address");
 
     var contact = new Span("Mob. : +917015539187, +918950959177  email : rkscientific.sales@gmail.com");
-    contact.getStyle().set("font-size", "11px").set("font-weight", "bold");
+    contact.addClassName("preview-company-contact");
 
     titleBlock.add(companyName, address, contact);
 
     var mainRow = new HorizontalLayout(logo, titleBlock);
+    mainRow.addClassName("preview-main-row");
     mainRow.setAlignItems(FlexComponent.Alignment.CENTER);
     mainRow.setSpacing(true);
     mainRow.setWidthFull();
     mainRow.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
     var header = new VerticalLayout(taxInvoice, mainRow);
+    header.addClassName("preview-center-header");
     header.setAlignItems(FlexComponent.Alignment.CENTER);
     header.setSpacing(false);
-    header.getStyle()
-        .set("padding", "0px 10px")
-        .set("border-bottom", "1px solid #333");
     return header;
   }
 
   private Div buildInvoiceMetaGrid() {
     var grid = new Div();
-    grid.getStyle()
-        .set("display", "grid")
-        .set("grid-template-columns", "1fr 1fr")
-        .set("width", "100%")
-        .set("border-bottom", "1px solid #333");
+    grid.addClassName("preview-meta-grid");
 
     var col1 = new VerticalLayout();
+    col1.addClassNames("preview-meta-col", "preview-meta-col-left");
     col1.setSpacing(false);
-    col1.getStyle()
-        .set("padding", "0px 10px")
-        .set("border-right", "1px solid #333");
 
     col1.add(metaItem("Invoice No.", invoice.getInvoiceNumber()));
     col1.add(metaItem("Dated", invoice.getInvoiceDate() != null ? invoice.getInvoiceDate()
@@ -197,9 +166,8 @@ public class InvoicePreviewDialog extends Dialog {
     col1.add(metaItem("Transport", invoice.getTransport() != null ? invoice.getTransport().name() : ""));
 
     var col2 = new VerticalLayout();
+    col2.addClassName("preview-meta-col");
     col2.setSpacing(false);
-    col2.getStyle()
-        .set("padding", "0px 10px");
 
     col2.add(metaItem("Vehicle No.", invoice.getVehicleNumber()));
     col2.add(metaItem("E-Way Bill No.", invoice.getEWayBillNumber()));
@@ -211,61 +179,52 @@ public class InvoicePreviewDialog extends Dialog {
 
   private Div metaItem(String label, String value) {
     var lbl = new Span(label);
-    lbl.getStyle().set("width", "120px").set("font-size", "11px");
+    lbl.addClassName("preview-meta-label");
 
     var val = new Span(": " + (value != null ? value : ""));
-    val.getStyle().set("font-size", "11px").set("font-weight", "bold");
+    val.addClassName("preview-meta-value");
 
     var item = new Div(lbl, val);
-    item.getStyle()
-        .set("display", "flex")
-        .set("padding-right", "10px")
-        .set("width", "100%");
+    item.addClassName("preview-meta-item");
     return item;
   }
 
   private Div buildBilledShippedRow() {
     var row = new Div();
-    row.getStyle()
-        .set("display", "grid")
-        .set("grid-template-columns", "1fr 1fr")
-        .set("width", "100%")
-        .set("border-bottom", "1px solid #333");
+    row.addClassName("preview-party-grid");
 
-    row.add(buildPartyInfo("Billed to :", billedCustomer));
+    var billedCol = buildPartyInfo("Billed to :", billedCustomer);
+    billedCol.addClassName("preview-party-col-right");
     var shippedCol = buildPartyInfo("Shipped to :", shippedCustomer);
-    shippedCol.getStyle().set("border-left", "1px solid #333");
-    row.add(shippedCol);
+    row.add(billedCol, shippedCol);
 
     return row;
   }
 
   private VerticalLayout buildPartyInfo(String title, Customer c) {
     var layout = new VerticalLayout();
+    layout.addClassName("preview-party-col");
     layout.setSpacing(false);
-    layout.setPadding(true);
-    layout.getStyle().set("padding", "5px 10px");
 
     var head = new Span(title);
-    head.getStyle().set("font-weight", "bold").set("font-size", "12px");
+    head.addClassName("preview-party-title");
     layout.add(head);
 
     if (c != null) {
       var name = new Span(c.getName().toUpperCase());
-      name.getStyle().set("font-weight", "bold").set("font-size", "12px").set("margin-top", "2px");
+      name.addClassName("preview-party-name");
 
       var addr = new Span(c.getStreet() + ", " + c.getCity() + ", " + c.getState());
-      addr.getStyle().set("font-size", "11px");
+      addr.addClassName("preview-party-text");
 
       var pin = new Span("Pin Code:- " + c.getPostalCode());
-      pin.getStyle().set("font-size", "11px");
+      pin.addClassName("preview-party-text");
 
       var mob = new Div(new Span("Party Mobile No."), new Span(": " + (c.getPhone() != null ? c.getPhone() : "")));
-      mob.getStyle().set("display", "flex").set("justify-content", "space-between")
-          .set("font-size", "11px");
+      mob.addClassName("preview-party-pair");
 
       var gst = new Div(new Span("GSTIN / UIN"), new Span(": " + c.getGstin()));
-      gst.getStyle().set("display", "flex").set("justify-content", "space-between").set("font-size", "11px");
+      gst.addClassName("preview-party-pair");
 
       layout.add(name, addr, pin, mob, gst);
     }
@@ -274,24 +233,15 @@ public class InvoicePreviewDialog extends Dialog {
 
   private Div buildItemsTableGrid() {
     var table = new Div();
-    table.getStyle()
-        .set("width", "100%")
-        .set("display", "flex")
-        .set("flex-direction", "column");
+    table.addClassName("preview-items-table");
 
     // Header
     var header = new Div();
-    header.getStyle()
-        .set("display", "grid")
-        .set("grid-template-columns", "40px 1fr 80px 50px 60px 80px 50px 100px")
-        .set("border-bottom", "1px solid #333")
-        .set("font-weight", "bold")
-        .set("font-size", "11px")
-        .set("text-align", "center");
+    header.addClassName("preview-items-header");
 
     header.add(headerCell("Sr No.", true));
     header.add(headerCell("Description of Goods", true));
-    header.add(headerCell("HSN/SAC Code", true));
+    header.add(headerCell("HSN Code", true));
     header.add(headerCell("Qty", true));
     header.add(headerCell("Unit", true));
     header.add(headerCell("Price", true));
@@ -305,10 +255,7 @@ public class InvoicePreviewDialog extends Dialog {
       for (LineItem item : invoice.getItems()) {
         Product p = productMap.get(item.getProductId());
         var row = new Div();
-        row.getStyle()
-            .set("display", "grid")
-            .set("grid-template-columns", "40px 1fr 80px 50px 60px 80px 50px 100px")
-            .set("font-size", "11px");
+        row.addClassName("preview-items-row");
 
         row.add(cell(String.valueOf(sr++), true, "center"));
         row.add(cell(p != null ? p.getName() : "Product #" + item.getProductId(), true, "left"));
@@ -327,104 +274,84 @@ public class InvoicePreviewDialog extends Dialog {
     }
 
     // Fill empty space to maintain height if needed? No, just let it be.
-    table.getStyle().set("border-bottom", "1px solid #333");
+    table.addClassName("preview-items-table-bordered");
 
     return table;
   }
 
   private Span headerCell(String text, boolean borderRight) {
     var s = new Span(text);
-    s.getStyle().set("padding", "4px 2px");
-    if (borderRight) s.getStyle().set("border-right", "1px solid #333");
+    s.addClassName("preview-header-cell");
+    if (borderRight) s.addClassName("preview-cell-border-right");
     return s;
   }
 
   private Span cell(String text, boolean borderRight, String align) {
     var s = new Span(text);
-    s.getStyle().set("padding", "0px 5px").set("text-align", align);
-    if (borderRight) s.getStyle().set("border-right", "1px solid #333");
+    s.addClassName("preview-cell");
+    s.addClassName("preview-align-" + align);
+    if (borderRight) s.addClassName("preview-cell-border-right");
     return s;
   }
 
   private VerticalLayout buildFooterDetails() {
     var footer = new VerticalLayout();
+    footer.addClassName("preview-details-footer");
     footer.setSpacing(false);
     footer.setPadding(false);
 
     // Bank Details
     var bankRow = new Div();
-    bankRow.getStyle()
-        .set("width", "100%")
-        .set("padding", "5px 10px")
-        .set("border-bottom", "1px solid #333")
-        .set("font-size", "11px");
+    bankRow.addClassName("preview-bank-row");
 
     var bankTitle = new Span("BANK DETAILS : ");
-    bankTitle.getStyle().set("font-weight", "bold");
+    bankTitle.addClassName("preview-bold");
 
     var bankInfo = new Span("HDFC BANK, AMBALA CANTT. A/C NO. : 50200049591048  IFSC CODE : HDFC0002562");
-    bankInfo.getStyle().set("font-weight", "bold");
+    bankInfo.addClassName("preview-bold");
 
     bankRow.add(bankTitle, bankInfo);
     footer.add(bankRow);
 
     // Terms and Signatures
     var bottomGrid = new Div();
-    bottomGrid.getStyle()
-        .set("display", "grid")
-        .set("grid-template-columns", "1fr 1fr")
-        .set("width", "100%");
+    bottomGrid.addClassName("preview-bottom-grid");
 
     var termsCol = new VerticalLayout();
+    termsCol.addClassName("preview-terms-col");
     termsCol.setSpacing(false);
     termsCol.setPadding(true);
-    termsCol.getStyle()
-        .set("padding", "5px 10px")
-        .set("border-right", "1px solid #333");
 
     var termsTitle = new Span("Terms & Condition");
-    termsTitle.getStyle()
-        .set("font-weight", "bold")
-        .set("font-size", "11px")
-        .set("text-decoration", "underline");
+    termsTitle.addClassName("preview-terms-title");
 
     var termsText = new Span(termsAndConditions);
-    termsText.getStyle()
-        .set("font-size", "10px")
-        .set("white-space", "pre-wrap");
+    termsText.addClassName("preview-terms-text");
 
     termsCol.add(termsTitle, termsText);
 
     var signCol = new VerticalLayout();
+    signCol.addClassName("preview-sign-col");
     signCol.setSpacing(false);
     signCol.setPadding(false);
 
     var receiverSign = new Div(new Span("Receiver's Signature :"));
-    receiverSign.getStyle()
-        .set("height", "60px")
-        .set("padding", "5px 10px")
-        .set("font-size", "11px");
+    receiverSign.addClassName("preview-receiver-sign");
 
     var authSign = new VerticalLayout();
+    authSign.addClassName("preview-auth-sign");
     authSign.setAlignItems(FlexComponent.Alignment.END);
     authSign.setSpacing(false);
     authSign.setPadding(true);
-    authSign.getStyle()
-        .set("border-top", "1px solid #333")
-        .set("padding", "5px 10px");
 
     var forCo = new Span("For R.K. SCIENTIFIC INDUSTRIES");
-    forCo.getStyle()
-        .set("font-weight", "bold")
-        .set("font-size", "11px");
+    forCo.addClassName("preview-sign-strong");
 
     var space = new Div();
     space.setHeight("40px");
 
     var authLabel = new Span("Authorised Signatory");
-    authLabel.getStyle()
-        .set("font-weight", "bold")
-        .set("font-size", "11px");
+    authLabel.addClassName("preview-sign-strong");
 
     authSign.add(forCo, space, authLabel);
 
@@ -440,7 +367,7 @@ public class InvoicePreviewDialog extends Dialog {
   private HorizontalLayout buildFooter() {
     // The anchor is hidden; the visible Download button triggers a programmatic click.
     var downloadAnchor = getDownloadAnchor();
-    downloadAnchor.getStyle().set("display", "none");
+    downloadAnchor.addClassName("preview-hidden-anchor");
 
     var downloadBtn = new Button("Download PDF", VaadinIcon.DOWNLOAD.create(),
         _ -> downloadAnchor.getElement().callJsFunction("click")
@@ -452,11 +379,9 @@ public class InvoicePreviewDialog extends Dialog {
     closeBtn.setId("close-preview-btn");
 
     var footer = new HorizontalLayout(downloadAnchor, downloadBtn, closeBtn);
+    footer.addClassName("preview-dialog-footer");
     footer.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
     footer.setWidthFull();
-    footer.getStyle()
-        .set("padding", "16px")
-        .set("border-top", "1px solid #e0e0e0");
     return footer;
   }
 

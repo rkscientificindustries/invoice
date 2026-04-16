@@ -1,0 +1,258 @@
+/* Dialog Chrome */
+.preview-dialog-header {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px;
+
+  .preview-dialog-title {
+    margin: 0;
+  }
+}
+
+.preview-dialog-footer {
+  border-top: 1px solid #e0e0e0;
+  padding: 16px;
+}
+
+.preview-hidden-anchor {
+  display: none;
+}
+
+/* Main Invoice Preview Container */
+.invoice-preview-dialog {
+  background: #f5f7f9;
+  min-height: 600px;
+  overflow-y: auto;
+  padding: 20px;
+
+  /* Paper Frame */
+  .invoice-preview-paper {
+    background: #fff;
+    border: 1px solid #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-family: "Inter", system-ui, sans-serif;
+    max-width: 780px;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Header Section */
+  .preview-top-bar {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 10px;
+    width: 100%;
+
+    .preview-gstin {
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .preview-original-copy {
+      font-size: 11px;
+    }
+  }
+
+  .preview-tax-invoice {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-decoration: underline;
+  }
+
+  .preview-center-header {
+    border-bottom: 1px solid #333;
+    padding: 0 10px;
+
+    .preview-company-name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .preview-company-address {
+      font-size: 12px;
+    }
+
+    .preview-company-contact {
+      font-size: 11px;
+      font-weight: bold;
+    }
+  }
+
+  /* Meta Information Grid */
+  .preview-meta-grid {
+    border-bottom: 1px solid #333;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+
+    .preview-meta-col {
+      padding: 0 10px;
+
+      &.preview-meta-col-left {
+        border-right: 1px solid #333;
+      }
+    }
+
+    .preview-meta-item {
+      display: flex;
+      padding-right: 10px;
+      width: 100%;
+    }
+
+    .preview-meta-label {
+      font-size: 11px;
+      width: 120px;
+    }
+
+    .preview-meta-value {
+      font-size: 11px;
+      font-weight: bold;
+    }
+  }
+
+  /* Party Information Grid */
+  .preview-party-grid {
+    border-bottom: 1px solid #333;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+
+    .preview-party-col {
+      padding: 0 10px;
+
+      &.preview-party-col-right {
+        border-right: 1px solid #333;
+      }
+    }
+
+    .preview-party-title {
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .preview-party-name {
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+
+    .preview-party-text {
+      font-size: 11px;
+    }
+
+    .preview-party-pair {
+      display: flex;
+      font-size: 11px;
+      justify-content: space-between;
+    }
+  }
+
+  /* Items Table */
+  .preview-items-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .preview-items-header,
+    .preview-items-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 80px 50px 60px 80px 50px 100px;
+    }
+
+    .preview-items-header {
+      border-bottom: 1px solid #333;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .preview-items-row {
+      font-size: 11px;
+
+      &.preview-items-table-bordered {
+        border-bottom: 1px solid #333;
+      }
+    }
+
+    .preview-header-cell {
+      padding: 4px 2px;
+    }
+
+    .preview-cell {
+      padding: 0 5px;
+
+      &.preview-cell-border-right {
+        border-right: 1px solid #333;
+      }
+    }
+  }
+
+  /* Footer Section */
+  .preview-bank-row {
+    box-sizing: border-box;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    font-size: 11px;
+    padding: 5px 10px;
+    width: 100%;
+  }
+
+  .preview-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+
+    .preview-terms-col {
+      border-right: 1px solid #333;
+      padding: 5px 10px;
+
+      .preview-terms-title {
+        font-size: 11px;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      .preview-terms-text {
+        font-size: 10px;
+        white-space: pre-wrap;
+      }
+    }
+
+    .preview-receiver-sign {
+      font-size: 11px;
+      height: 60px;
+      padding: 5px 10px;
+    }
+
+    .preview-auth-sign {
+      border-top: 1px solid #333;
+      padding: 5px 10px;
+
+      .preview-sign-strong {
+        font-size: 11px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  /* Utility Classes */
+  .preview-align-left {
+    text-align: left;
+  }
+
+  .preview-align-center {
+    text-align: center;
+  }
+
+  .preview-align-right {
+    text-align: right;
+  }
+
+  .preview-bold {
+    font-weight: bold;
+  }
+}
