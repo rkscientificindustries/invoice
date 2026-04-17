@@ -389,7 +389,7 @@ public class InvoicePreviewDialog extends Dialog {
     var downloadAnchor = new Anchor(
         DownloadHandler.fromInputStream(_ -> {
           try {
-            byte[] pdfBytes = pdfService.generatePdf(invoice, billedCustomer, products, termsAndConditions);
+            byte[] pdfBytes = pdfService.generatePdf(invoice, billedCustomer, shippedCustomer, products, termsAndConditions);
             String filename = "invoice-" + (invoice.getInvoiceNumber() != null
                 ? invoice.getInvoiceNumber() : "draft") + ".pdf";
             return new DownloadResponse(

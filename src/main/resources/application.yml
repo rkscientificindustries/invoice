@@ -21,3 +21,24 @@ management:
 
 vaadin:
   launch-browser: false
+
+invoice:
+  customers: 10
+  products: 10
+  invoices: 5
+  pdf:
+    title: TAX INVOICE
+    copy-label: Original Copy
+    company:
+      name: R.K. SCIENTIFIC INDUSTRIES
+      gstin: 06CGLPP3030J1ZC
+      address: 21A, BABYAL ROAD MAHESH NAGAR, AMBALA CANTT, Ambala, Haryana, 133001
+      phone: +917015539187, +918950959177
+      email: rkscientific.sales@gmail.com
+      logo-path: static/logo-rk-sm.jpg
+      signatory-label: For R.K. SCIENTIFIC INDUSTRIES
+    bank:
+      heading: BANK DETAILS
+      bank-name: HDFC BANK, AMBALA CANTT
+      account-number: "50200049591048"
+      ifsc: HDFC0002562
