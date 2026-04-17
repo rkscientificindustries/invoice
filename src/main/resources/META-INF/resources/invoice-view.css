@@ -49,9 +49,37 @@
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
+    .invoice-action-bar-actions {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .invoice-action-button::part(label) {
+      display: none;
+    }
+
+    .invoice-action-button {
+      min-width: auto;
+      padding-inline: var(--vaadin-padding-s);
+    }
+
+    .invoice-header-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .invoice-customer-row {
+      flex-direction: column;
+    }
+
     .invoice-half-width {
       width: 100%;
+    }
+
+    .invoice-footer-section {
+      flex-direction: column-reverse;
     }
   }
 }
