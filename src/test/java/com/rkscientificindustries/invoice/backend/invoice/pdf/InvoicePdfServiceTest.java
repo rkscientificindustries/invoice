@@ -1,8 +1,11 @@
-package com.rkscientificindustries.invoice.backend.invoice;
+package com.rkscientificindustries.invoice.backend.invoice.pdf;
 
 import com.rkscientificindustries.invoice.backend.config.InvoiceProperties;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerType;
+import com.rkscientificindustries.invoice.backend.invoice.Invoice;
+import com.rkscientificindustries.invoice.backend.invoice.InvoiceStatus;
+import com.rkscientificindustries.invoice.backend.invoice.LineItem;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.Product.ItemType;
 import com.rkscientificindustries.invoice.backend.product.Product.Unit;
@@ -17,12 +20,21 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InvoicePdfServiceTest {
+  private final PdfCellFactory cellFactory = new PdfCellFactory();
+  private final InvoicePdfTotalsCalculator totalsCalculator = new InvoicePdfTotalsCalculator();
+  private final InvoicePdfService service = new InvoicePdfService(
+      new InvoicePdfHeaderRenderer(cellFactory),
+      new InvoicePdfMetaRenderer(cellFactory),
+      new InvoicePdfPartiesRenderer(),
+      new InvoicePdfItemsRenderer(cellFactory, totalsCalculator),
+      new InvoicePdfTotalsRenderer(cellFactory),
+      new InvoicePdfFooterRenderer(),
+      new InvoiceProperties()
+  );
 
   @Test
   @DisplayName("Should generate a valid PDF for invoice preview layout")
   void shouldGenerateValidPdf() {
-    var service = new InvoicePdfService(new InvoiceProperties());
-
     var billedCustomer = new Customer(
         1L,
         "Atomplus Technologies Pvt. Ltd.",
@@ -102,16 +114,12 @@ class InvoicePdfServiceTest {
 
     byte[] pdf = service.generatePdf(invoice, billedCustomer, shippedCustomer, List.of(product), "E& O.E");
 
-    assertThat(pdf).isNotNull();
-    assertThat(pdf.length).isGreaterThan(1_500);
-    assertThat(new String(pdf, 0, 4)).isEqualTo("%PDF");
+    assertValidPdf(pdf, 1_500);
   }
 
   @Test
   @DisplayName("Should fallback to billed customer when shipped customer is null")
   void shouldFallbackToBilledCustomerWhenShippedCustomerMissing() {
-    var service = new InvoicePdfService(new InvoiceProperties());
-
     var customer = new Customer(
         1L,
         "Demo Customer",
@@ -164,8 +172,13 @@ class InvoicePdfServiceTest {
 
     byte[] pdf = service.generatePdf(invoice, customer, null, List.of(product), "Standard terms");
 
+    assertValidPdf(pdf, 1_000);
+  }
+
+  private void assertValidPdf(byte[] pdf, int minLengthBytes) {
     assertThat(pdf).isNotNull();
-    assertThat(pdf.length).isGreaterThan(1_000);
+    assertThat(pdf.length).isGreaterThan(minLengthBytes);
     assertThat(new String(pdf, 0, 4)).isEqualTo("%PDF");
   }
 }
+

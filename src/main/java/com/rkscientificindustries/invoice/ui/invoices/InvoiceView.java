@@ -3,7 +3,7 @@ package com.rkscientificindustries.invoice.ui.invoices;
 import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerService;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
-import com.rkscientificindustries.invoice.backend.invoice.InvoicePdfService;
+import com.rkscientificindustries.invoice.backend.invoice.pdf.InvoicePdfService;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceService;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceStatus;
 import com.rkscientificindustries.invoice.backend.invoice.LineItem;
