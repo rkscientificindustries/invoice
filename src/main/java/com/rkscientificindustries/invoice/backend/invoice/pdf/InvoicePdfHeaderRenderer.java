@@ -76,7 +76,7 @@ class InvoicePdfHeaderRenderer {
       }
     }, () -> logoCell.addElement(new Phrase(" ", fonts.body())));
 
-    var detailsCell = getDetailsCell(pdf, company, fonts);
+    var detailsCell = getDetailsCell(company, fonts);
 
     table.addCell(logoCell);
     table.addCell(detailsCell);
@@ -85,9 +85,7 @@ class InvoicePdfHeaderRenderer {
     document.add(table);
   }
 
-  private PdfPCell getDetailsCell(InvoiceProperties.PdfProperties pdf,
-                                  InvoiceProperties.CompanyProperties company,
-                                  InvoicePdfFonts fonts) {
+  private PdfPCell getDetailsCell(InvoiceProperties.CompanyProperties company, InvoicePdfFonts fonts) {
     var detailsCell = new PdfPCell();
     detailsCell.setHorizontalAlignment(Element.ALIGN_CENTER);
     detailsCell.setBorder(Rectangle.RIGHT | Rectangle.BOTTOM);

@@ -114,6 +114,7 @@ public class InvoicePreviewDialog extends Dialog {
     content.addClassName("invoice-preview-dialog");
     content.setSpacing(false);
     content.setPadding(false);
+    content.getStyle().set("padding-top", "0");
     content.setAlignItems(FlexComponent.Alignment.CENTER);
 
     if (payload.pdfBytes().length == 0) {
@@ -128,7 +129,7 @@ public class InvoicePreviewDialog extends Dialog {
     String encodedPdf = Base64.getEncoder().encodeToString(payload.pdfBytes());
     this.frame = new IFrame("data:" + PDF_CONTENT_TYPE + ";base64," + encodedPdf);
     frame.setWidthFull();
-    frame.setHeight("70vh");
+    frame.setHeight("77vh");
     frame.getElement().setAttribute("title", "Final invoice PDF preview");
     frame.getStyle().set("border", "none");
 

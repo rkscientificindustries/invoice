@@ -1,5 +1,4 @@
 .preview-dialog-header {
-  border-bottom: 1px solid #e0e0e0;
   padding: 16px;
 }
 
@@ -20,7 +19,6 @@
 
 .invoice-preview-paper {
   background: #fff;
-  border: 1px solid #333;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: #000;
   font-family: "Inter", system-ui, sans-serif;
