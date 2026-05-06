@@ -30,15 +30,13 @@ invoice:
     title: TAX INVOICE
     copy-label: Original Copy
     company:
-      name: R.K. SCIENTIFIC INDUSTRIES
-      gstin: 06CGLPP3030J1ZC
-      address: 21A, BABYAL ROAD MAHESH NAGAR, AMBALA CANTT, Ambala, Haryana, 133001
-      phone: +917015539187, +918950959177
-      email: rkscientific.sales@gmail.com
+      name: ${COMPANY_NAME:Company Name}
+      gstin: ${COMPANY_GSTIN:00XXXXXXX0X0X0}
+      address: ${COMPANY_ADDRESS:Your Address}
+      phone: ${COMPANY_PHONE:+91-XXXXXXXXXX}
+      email: ${COMPANY_EMAIL:contact@example.com}
       logo-path: static/logo-rk-sm.jpg
-      signatory-label: For R.K. SCIENTIFIC INDUSTRIES
     bank:
-      heading: BANK DETAILS
-      bank-name: HDFC BANK, AMBALA CANTT
-      account-number: "50200049591048"
-      ifsc: HDFC0002562
+      bank-name: ${BANK_NAME:Your Bank}
+      account-number: ${BANK_ACCOUNT:XXXXXXXXXXXX}
+      ifsc: ${BANK_IFSC:XXXXXXXXX}

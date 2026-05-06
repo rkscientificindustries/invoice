@@ -122,7 +122,7 @@ class InvoicePdfFooterRenderer {
       var companyLabelCell = new PdfPCell();
       companyLabelCell.setBorder(Rectangle.NO_BORDER);
       companyLabelCell.setPadding(0f);
-      var companySignatory = new Paragraph(invoiceProperties.getPdf().getCompany().getSignatoryLabel(),
+      var companySignatory = new Paragraph("For " + invoiceProperties.getPdf().getCompany().getName(),
           fonts.bodyBold());
       companySignatory.setAlignment(Element.ALIGN_RIGHT);
       companyLabelCell.addElement(companySignatory);
@@ -149,7 +149,7 @@ class InvoicePdfFooterRenderer {
     private PdfPCell createBankInfoCell() {
       var bank = invoiceProperties.getPdf().getBank();
       var bankLine = new Phrase();
-      bankLine.add(new Chunk(bank.getHeading() + " : ", fonts.bodyBold()));
+      bankLine.add(new Chunk("BANK DETAILS : ", fonts.bodyBold()));
       bankLine.add(new Chunk(bank.getBankName(), fonts.body()));
       bankLine.add(new Chunk("  A/C NO. : ", fonts.bodyBold()));
       bankLine.add(new Chunk(bank.getAccountNumber(), fonts.body()));
