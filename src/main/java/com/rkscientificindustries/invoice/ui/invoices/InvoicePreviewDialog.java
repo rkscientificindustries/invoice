@@ -21,6 +21,7 @@ import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import org.jspecify.annotations.NonNull;
 
+import com.vaadin.flow.component.select.Select;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.List;
@@ -29,14 +30,28 @@ import java.util.List;
 public class InvoicePreviewDialog extends Dialog {
   private static final String PDF_CONTENT_TYPE = "application/pdf";
 
-  private final InvoicePreviewPayloadProvider.PdfPreviewPayload payload;
+  private InvoicePreviewPayloadProvider.PdfPreviewPayload payload;
+  
+  private final InvoicePreviewPayloadProvider payloadProvider;
+  private final Invoice invoice;
+  private final Customer billedCustomer;
+  private final Customer shippedCustomer;
+  private final List<Product> products;
+  private final String termsAndConditions;
+  
+  private IFrame frame;
 
   public InvoicePreviewDialog(Invoice invoice, Customer billedCustomer, @NonNull Customer shippedCustomer,
                               List<Product> products, InvoicePdfService pdfService,
                               @NonNull String termsAndConditions) {
-    String finalTerms = termsAndConditions.isBlank() ? AppConstants.DEFAULT_TERMS : termsAndConditions;
-    var payloadProvider = new InvoicePreviewPayloadProvider(pdfService);
-    this.payload = payloadProvider.createPayload(invoice, billedCustomer, shippedCustomer, products, finalTerms);
+    this.invoice = invoice;
+    this.billedCustomer = billedCustomer;
+    this.shippedCustomer = shippedCustomer;
+    this.products = products;
+    this.termsAndConditions = termsAndConditions.isBlank() ? AppConstants.DEFAULT_TERMS : termsAndConditions;
+    
+    this.payloadProvider = new InvoicePreviewPayloadProvider(pdfService);
+    this.payload = payloadProvider.createPayload(invoice, billedCustomer, shippedCustomer, products, this.termsAndConditions, "Original Copy");
 
     setWidth("800px");
     setMaxHeight("90vh");
@@ -51,11 +66,19 @@ public class InvoicePreviewDialog extends Dialog {
   private HorizontalLayout buildHeader() {
     var title = new H3("Final PDF Preview");
     title.addClassName("preview-dialog-title");
+    
+    Select<String> copySelect = new Select<>();
+    copySelect.setItems("Original Copy", "Duplicate Copy", "Triplicate Copy");
+    copySelect.setValue("Original Copy");
+    copySelect.addValueChangeListener(event -> {
+        this.payload = payloadProvider.createPayload(invoice, billedCustomer, shippedCustomer, products, termsAndConditions, event.getValue());
+        updateIFrameSource();
+    });
 
     var downloadAnchor = getDownloadAnchor();
     downloadAnchor.addClassName("preview-hidden-anchor");
 
-    var downloadBtn = new Button("Download Final PDF", VaadinIcon.DOWNLOAD.create(),
+    var downloadBtn = new Button("Download", VaadinIcon.DOWNLOAD.create(),
         _ -> downloadAnchor.getElement().callJsFunction("click")
     );
     downloadBtn.addThemeVariants(ButtonVariant.PRIMARY);
@@ -64,7 +87,7 @@ public class InvoicePreviewDialog extends Dialog {
     var closeBtn = new Button(VaadinIcon.CLOSE.create(), _ -> close());
     closeBtn.addThemeVariants(ButtonVariant.TERTIARY);
 
-    var actions = new HorizontalLayout(downloadBtn, closeBtn);
+    var actions = new HorizontalLayout(copySelect, downloadBtn, closeBtn);
     actions.setSpacing(true);
     actions.setAlignItems(FlexComponent.Alignment.CENTER);
     actions.addClassName("preview-dialog-actions");
@@ -76,6 +99,13 @@ public class InvoicePreviewDialog extends Dialog {
     header.setAlignItems(FlexComponent.Alignment.CENTER);
     header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
     return header;
+  }
+
+  private void updateIFrameSource() {
+    if (frame != null && payload.pdfBytes().length > 0) {
+      String encodedPdf = Base64.getEncoder().encodeToString(payload.pdfBytes());
+      frame.setSrc("data:" + PDF_CONTENT_TYPE + ";base64," + encodedPdf);
+    }
   }
 
   // ── Invoice preview (mimics A4) ───────────────────────────────────
@@ -96,7 +126,7 @@ public class InvoicePreviewDialog extends Dialog {
     }
 
     String encodedPdf = Base64.getEncoder().encodeToString(payload.pdfBytes());
-    var frame = new IFrame("data:" + PDF_CONTENT_TYPE + ";base64," + encodedPdf);
+    this.frame = new IFrame("data:" + PDF_CONTENT_TYPE + ";base64," + encodedPdf);
     frame.setWidthFull();
     frame.setHeight("70vh");
     frame.getElement().setAttribute("title", "Final invoice PDF preview");

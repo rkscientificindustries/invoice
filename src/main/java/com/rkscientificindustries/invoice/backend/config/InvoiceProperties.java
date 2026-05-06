@@ -20,8 +20,6 @@ public class InvoiceProperties {
 
   @Data
   public static class PdfProperties {
-    private String title = "TAX INVOICE";
-    private String copyLabel = "Original Copy";
     private CompanyProperties company = new CompanyProperties();
     private BankProperties bank = new BankProperties();
   }

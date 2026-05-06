@@ -112,7 +112,7 @@ class InvoicePdfServiceTest {
         .status(InvoiceStatus.FINALIZED)
         .build();
 
-    byte[] pdf = service.generatePdf(invoice, billedCustomer, shippedCustomer, List.of(product), "E& O.E");
+    byte[] pdf = service.generatePdf(invoice, billedCustomer, shippedCustomer, List.of(product), "E& O.E", "Original Copy");
 
     assertValidPdf(pdf, 1_500);
   }
@@ -170,7 +170,7 @@ class InvoicePdfServiceTest {
         .totalAmount(new BigDecimal("118.00"))
         .build();
 
-    byte[] pdf = service.generatePdf(invoice, customer, null, List.of(product), "Standard terms");
+    byte[] pdf = service.generatePdf(invoice, customer, null, List.of(product), "Standard terms", "Original Copy");
 
     assertValidPdf(pdf, 1_000);
   }

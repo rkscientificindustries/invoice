@@ -24,12 +24,12 @@ class InvoicePdfHeaderRenderer {
     this.cellFactory = cellFactory;
   }
 
-  void render(Document document, InvoiceProperties invoiceProperties, InvoicePdfFonts fonts) {
-    addTopBar(document, invoiceProperties, fonts);
+  void render(Document document, InvoiceProperties invoiceProperties, String copyLabel, InvoicePdfFonts fonts) {
+    addTopBar(document, invoiceProperties, copyLabel, fonts);
     addCompanyHeader(document, invoiceProperties, fonts);
   }
 
-  private void addTopBar(Document document, InvoiceProperties invoiceProperties, InvoicePdfFonts fonts) {
+  private void addTopBar(Document document, InvoiceProperties invoiceProperties, String copyLabel, InvoicePdfFonts fonts) {
     var pdf = invoiceProperties.getPdf();
     var company = pdf.getCompany();
 
@@ -38,7 +38,7 @@ class InvoicePdfHeaderRenderer {
     table.setWidths(new float[]{65, 35});
 
     var gstin = cellFactory.boxedCell("GSTIN: " + safe(company.getGstin()), fonts.bodyBold(), Element.ALIGN_LEFT, 4f);
-    var copy = cellFactory.boxedCell(safe(pdf.getCopyLabel()), fonts.body(), Element.ALIGN_RIGHT, 4f);
+    var copy = cellFactory.boxedCell(safe(copyLabel), fonts.body(), Element.ALIGN_RIGHT, 4f);
     gstin.setBorder(Rectangle.LEFT | Rectangle.TOP);
     copy.setBorder(Rectangle.RIGHT | Rectangle.TOP);
     gstin.setPaddingTop(2f);
@@ -93,7 +93,7 @@ class InvoicePdfHeaderRenderer {
     detailsCell.setBorder(Rectangle.RIGHT | Rectangle.BOTTOM);
     detailsCell.setPadding(2f);
 
-    var invoiceTitle = new Paragraph(safe(pdf.getTitle()), fonts.title());
+    var invoiceTitle = new Paragraph(safe("TAX INVOICE"), fonts.title());
     invoiceTitle.setAlignment(Element.ALIGN_CENTER);
     invoiceTitle.setSpacingAfter(1f);
 

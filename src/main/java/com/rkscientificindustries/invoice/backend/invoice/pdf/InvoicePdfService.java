@@ -54,7 +54,7 @@ public class InvoicePdfService {
   }
 
   public byte[] generatePdf(Invoice invoice, Customer billedCustomer, Customer shippedCustomer,
-                            List<Product> products, String termsAndConditions) {
+                            List<Product> products, String termsAndConditions, String copyLabel) {
     try (var out = new ByteArrayOutputStream()) {
       var document = new Document(PageSize.A4, 18, 18, 18, FOOTER_RESERVED_HEIGHT);
       var writer = PdfWriter.getInstance(document, out);
@@ -63,7 +63,7 @@ public class InvoicePdfService {
 
       var productMap = buildProductMap(products);
 
-      headerRenderer.render(document, invoiceProperties, fonts);
+      headerRenderer.render(document, invoiceProperties, copyLabel, fonts);
       metaRenderer.render(document, invoice, fonts);
       partiesRenderer.render(document, billedCustomer, shippedCustomer, fonts);
       InvoicePdfTotals totals = itemsRenderer.render(document, invoice, productMap, fonts);

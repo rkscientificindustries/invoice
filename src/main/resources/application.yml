@@ -27,8 +27,6 @@ invoice:
   products: 10
   invoices: 5
   pdf:
-    title: TAX INVOICE
-    copy-label: Original Copy
     company:
       name: ${COMPANY_NAME:Company Name}
       gstin: ${COMPANY_GSTIN:00XXXXXXX0X0X0}

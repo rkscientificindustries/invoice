@@ -38,13 +38,13 @@ class InvoicePreviewPayloadProviderTest {
     var shipped = new Customer();
     shipped.setName("Ship Customer");
 
-    when(pdfService.generatePdf(invoice, billed, shipped, List.of(), "TNC"))
+    when(pdfService.generatePdf(invoice, billed, shipped, List.of(), "TNC", "Original Copy"))
         .thenReturn(expected);
 
     var provider = new InvoicePreviewPayloadProvider(pdfService);
-    var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC");
+    var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
 
-    verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC");
+    verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
     assertThat(payload.filename()).isEqualTo("invoice-INV-123.pdf");
     assertThat(payload.pdfBytes()).isEqualTo(expected);
   }
@@ -66,13 +66,13 @@ class InvoicePreviewPayloadProviderTest {
     var shipped = new Customer();
     shipped.setName("Ship Customer");
 
-    when(pdfService.generatePdf(invoice, billed, shipped, List.<Product>of(), "TNC"))
+    when(pdfService.generatePdf(invoice, billed, shipped, List.<Product>of(), "TNC", "Original Copy"))
         .thenReturn(expected);
 
     var provider = new InvoicePreviewPayloadProvider(pdfService);
-    var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC");
+    var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
 
-    verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC");
+    verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
     assertThat(payload.filename()).isEqualTo("invoice-draft.pdf");
     assertThat(payload.pdfBytes()).isEqualTo(expected);
   }

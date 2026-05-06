@@ -4,6 +4,7 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
 import com.rkscientificindustries.invoice.backend.invoice.pdf.InvoicePdfService;
 import com.rkscientificindustries.invoice.backend.product.Product;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,13 +21,20 @@ public class InvoicePreviewPayloadProvider {
                                          Customer billedCustomer,
                                          Customer shippedCustomer,
                                          List<Product> products,
-                                         String termsAndConditions) {
-    byte[] pdfBytes = pdfService.generatePdf(invoice, billedCustomer, shippedCustomer, products, termsAndConditions);
+                                         String termsAndConditions,
+                                         @NonNull String copyLabel) {
+    byte[] pdfBytes = pdfService.generatePdf(invoice, billedCustomer, shippedCustomer, products, termsAndConditions, copyLabel);
 
     String fileSuffix = invoice.getInvoiceNumber() != null && !invoice.getInvoiceNumber().isBlank()
         ? invoice.getInvoiceNumber()
         : "draft";
-    String filename = "invoice-" + fileSuffix + ".pdf";
+        
+    String copySuffix = "";
+    if (!copyLabel.isBlank()) {
+        copySuffix = "-" + copyLabel.toLowerCase().replace(" copy", "").replace(" ", "-");
+    }
+    
+    String filename = "invoice-" + fileSuffix + copySuffix + ".pdf";
 
     return new PdfPreviewPayload(filename, pdfBytes);
   }
