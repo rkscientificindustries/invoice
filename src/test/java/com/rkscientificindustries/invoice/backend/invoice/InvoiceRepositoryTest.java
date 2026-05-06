@@ -83,7 +83,6 @@ class InvoiceRepositoryTest {
     items.add(item);
 
     Invoice invoice = Invoice.builder()
-        .invoiceNumber("INV-001")
         .invoiceDate(LocalDate.now())
         .billedTo(customerId)
         .shippedTo(customerId)
@@ -95,6 +94,7 @@ class InvoiceRepositoryTest {
         .subtotal(new BigDecimal("200.00"))
         .totalTax(new BigDecimal("36.00"))
         .totalAmount(new BigDecimal("236.00"))
+        .status(InvoiceStatus.DRAFT)
         .build();
 
     // Act
@@ -103,7 +103,7 @@ class InvoiceRepositoryTest {
 
     // Assert
     assertThat(foundInvoice).isPresent();
-    assertThat(foundInvoice.get().getInvoiceNumber()).isEqualTo("INV-001");
+    assertThat(foundInvoice.get().getInvoiceNumber()).isNotNull();
     assertThat(foundInvoice.get().getItems()).hasSize(1);
     assertThat(foundInvoice.get().getItems().getFirst().getProductId()).isEqualTo(productId);
   }

@@ -25,8 +25,8 @@ public class InvoicePreviewPayloadProvider {
                                          @NonNull String copyLabel) {
     byte[] pdfBytes = pdfService.generatePdf(invoice, billedCustomer, shippedCustomer, products, termsAndConditions, copyLabel);
 
-    String fileSuffix = invoice.getInvoiceNumber() != null && !invoice.getInvoiceNumber().isBlank()
-        ? invoice.getInvoiceNumber()
+    String fileSuffix = invoice.getInvoiceNumber() != null
+        ? String.valueOf(invoice.getInvoiceNumber())
         : "draft";
         
     String copySuffix = "";

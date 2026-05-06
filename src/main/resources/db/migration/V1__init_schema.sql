@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS products
 CREATE TABLE IF NOT EXISTS invoices
 (
     id                   BIGSERIAL PRIMARY KEY,
-    invoice_number       VARCHAR(50),
+    invoice_number       BIGSERIAL,
     invoice_date         DATE,
     billed_to            BIGINT REFERENCES customers (id),
     shipped_to           BIGINT REFERENCES customers (id),
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS invoices
     discount_percentage  DECIMAL(5, 2)           DEFAULT 0,
     total_tax            DECIMAL(12, 2) NOT NULL DEFAULT 0,
     total_amount         DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    status               VARCHAR(20)    NOT NULL DEFAULT 'DRAFT',
+    status               VARCHAR(20)    NOT NULL,
     created_date         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date   TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version              INTEGER        NOT NULL DEFAULT 0

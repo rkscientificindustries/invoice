@@ -13,6 +13,11 @@ public final class InvoiceUtils {
   }
 
   public static Badge buildStatusBadge(InvoiceStatus status) {
+    if (status == null) {
+      var badge = new Badge();
+      badge.setVisible(false);
+      return badge;
+    }
     var badge = new Badge(status.name());
     switch (status) {
       case DRAFT -> badge.addThemeVariants(BadgeVariant.WARNING);

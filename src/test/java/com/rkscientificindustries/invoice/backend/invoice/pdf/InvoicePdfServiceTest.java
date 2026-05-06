@@ -95,7 +95,7 @@ class InvoicePdfServiceTest {
 
     var invoice = Invoice.builder()
         .id(77L)
-        .invoiceNumber("106")
+        .invoiceNumber(106L)
         .invoiceDate(LocalDate.of(2025, 12, 22))
         .billedTo(1L)
         .shippedTo(2L)
@@ -153,7 +153,7 @@ class InvoicePdfServiceTest {
     );
 
     var invoice = Invoice.builder()
-        .invoiceNumber("INV-10")
+        .invoiceNumber(10L)
         .invoiceDate(LocalDate.now())
         .billedTo(1L)
         .place(State.MAHARASHTRA)

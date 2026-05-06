@@ -15,10 +15,6 @@
     padding: var(--vaadin-padding-m);
   }
 
-  .invoice-half-width {
-    width: 50%;
-  }
-
   .customer-address-block {
     color: var(--vaadin-text-color-secondary);
     font-size: var(--aura-font-size-s);
@@ -65,20 +61,11 @@
       padding-inline: var(--vaadin-padding-s);
     }
 
-    .invoice-header-section {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .invoice-customer-row {
+    .flex-column {
       flex-direction: column;
     }
 
-    .invoice-half-width {
-      width: 100%;
-    }
-
-    .invoice-footer-section {
+    .flex-column-reverse {
       flex-direction: column-reverse;
     }
   }

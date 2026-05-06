@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
@@ -25,7 +26,8 @@ public class Invoice {
   @Id
   private Long id;
 
-  private String invoiceNumber;
+  @ReadOnlyProperty
+  private Long invoiceNumber;
 
   private LocalDate invoiceDate;
 
@@ -62,8 +64,7 @@ public class Invoice {
   @DecimalMin(value = "0.0")
   private BigDecimal totalAmount;
 
-  @Builder.Default
-  private InvoiceStatus status = InvoiceStatus.DRAFT;
+  private InvoiceStatus status;
 
   @CreatedDate
   private Instant createdDate;

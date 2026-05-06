@@ -81,7 +81,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   private Div billedCustomerAddressBlock;
   private Div shippedCustomerAddressBlock;
   private DatePicker invoiceDatePicker;
-  private TextField invoiceNumberField;
   private Grid<LineItemRow> lineGrid;
 
   // ── Other info ─────────────────────────────────────────────────────
@@ -101,6 +100,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   private Button finalizeBtn;
   private Button revertBtn;
   private Button saveDraftBtn;
+  private Button previewBtn;
 
   public InvoiceView(InvoiceService invoiceService, CustomerService customerService,
                      ProductService productService, InvoicePdfService pdfService) {
@@ -180,7 +180,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     breadcrumbs.addClassName("styled-breadcrumb");
     breadcrumbs.add(
         new Breadcrumb("Invoices", "invoices"),
-        new Breadcrumb(currentInvoice.getInvoiceNumber() != null ? currentInvoice.getInvoiceNumber() : "New")
+        new Breadcrumb(currentInvoice.getInvoiceNumber() != null ? String.valueOf(currentInvoice.getInvoiceNumber()) : "New")
     );
 
     statusBadge = InvoiceUtils.buildStatusBadge(currentInvoice.getStatus());
@@ -199,7 +199,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     revertBtn.addClassName("invoice-action-button");
     revertBtn.setId("revert-to-draft-btn");
 
-    var previewBtn = new Button("Preview", VaadinIcon.EYE.create(), _ -> openPreview());
+    previewBtn = new Button("Preview", VaadinIcon.EYE.create(), _ -> openPreview());
     previewBtn.addClassName("invoice-action-button");
     previewBtn.setId("preview-btn");
 
@@ -245,6 +245,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
           .equals(e.getOldValue()))) {
         shippedCustomerCombo.setValue(e.getValue());
       }
+      updateActionBarVisibility();
     });
 
     shippedCustomerCombo.addValueChangeListener(e -> {
@@ -258,25 +259,17 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     var billedPanel = new VerticalLayout(billedCustomerCombo, billedCustomerAddressBlock);
     billedPanel.setPadding(false);
     billedPanel.setSpacing(false);
-    billedPanel.addClassName("invoice-half-width");
 
     var shippedPanel = new VerticalLayout(shippedCustomerCombo, shippedCustomerAddressBlock);
     shippedPanel.setPadding(false);
     shippedPanel.setSpacing(false);
-    shippedPanel.addClassName("invoice-half-width");
 
-    var customerRow = new HorizontalLayout(billedPanel, shippedPanel);
-    customerRow.setWidthFull();
-    customerRow.setSpacing(true);
-    customerRow.setPadding(false);
-    customerRow.addClassName("invoice-customer-row");
-
-    Customer billedCustomer = findCustomerById(currentInvoice.getBilledTo());
+    var billedCustomer = findCustomerById(currentInvoice.getBilledTo());
     if (billedCustomer != null) {
       billedCustomerCombo.setValue(billedCustomer);
     }
 
-    Customer shippedCustomer = findCustomerById(currentInvoice.getShippedTo());
+    var shippedCustomer = findCustomerById(currentInvoice.getShippedTo());
     if (shippedCustomer != null) {
       shippedCustomerCombo.setValue(shippedCustomer);
     } else if (billedCustomer != null) {
@@ -286,28 +279,18 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     updateCustomerAddress(billedCustomerAddressBlock, billedCustomerCombo.getValue());
     updateCustomerAddress(shippedCustomerAddressBlock, shippedCustomerCombo.getValue());
 
-    var leftLayout = new VerticalLayout(customerRow);
-    leftLayout.setPadding(false);
-    leftLayout.setSpacing(false);
-    leftLayout.addClassName("invoice-half-width");
-
-    // RIGHT — invoice meta
-    invoiceNumberField = new TextField("Invoice Number");
-    invoiceNumberField.setId("invoice-number-field");
-    invoiceNumberField.setValue(currentInvoice.getInvoiceNumber() != null ? currentInvoice.getInvoiceNumber() : "");
-
     invoiceDatePicker = new DatePicker("Invoice Date");
     invoiceDatePicker.setId("invoice-date-picker");
     invoiceDatePicker.setValue(currentInvoice.getInvoiceDate() != null ? currentInvoice.getInvoiceDate() : LocalDate.now());
+    invoiceDatePicker.setWidthFull();
 
-    var rightForm = new FormLayout(invoiceNumberField, invoiceDatePicker);
-    rightForm.addClassName("invoice-half-width");
+    var dateSection = new VerticalLayout(invoiceDatePicker);
+    dateSection.setPadding(false);
+    dateSection.setSpacing(false);
 
-    var header = new HorizontalLayout(leftLayout, rightForm);
+    var header = new HorizontalLayout(billedPanel, shippedPanel, dateSection);
     header.setWidthFull();
-    header.setAlignItems(FlexComponent.Alignment.START);
-    header.addClassName("invoice-header-section");
-    header.addClassNames("invoice-card", "invoice-card-padded");
+    header.addClassNames("invoice-card", "invoice-card-padded", "flex-column");
     return header;
   }
 
@@ -349,6 +332,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
           row.recalculate();
           lineGrid.getDataProvider().refreshAll();
           recalculateTotals();
+          updateActionBarVisibility();
         }
       });
       return combo;
@@ -429,6 +413,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
         lineItemRows.remove(row);
         lineGrid.setItems(lineItemRows);
         recalculateTotals();
+        updateActionBarVisibility();
       });
       return delBtn;
     });
@@ -445,6 +430,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     addLineBtn.addClickListener(_ -> {
       lineItemRows.add(new LineItemRow());
       lineGrid.setItems(lineItemRows);
+      updateActionBarVisibility();
     });
 
     var tab = new VerticalLayout(lineGrid, addLineBtn);
@@ -505,7 +491,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     footer.setWidthFull();
     footer.setAlignItems(FlexComponent.Alignment.STRETCH);
     footer.setSpacing(true);
-    footer.addClassName("invoice-footer-section");
+    footer.addClassName("flex-column-reverse");
     return footer;
   }
 
@@ -569,7 +555,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     currentInvoice.setStatus(InvoiceStatus.DRAFT);
     currentInvoice = invoiceService.save(currentInvoice);
     showNotification("Draft saved.", NotificationVariant.SUCCESS);
-    refreshActionBar();
+    updateActionBarVisibility();
   }
 
   private void finalizeInvoice() {
@@ -578,7 +564,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     currentInvoice = invoiceService.save(currentInvoice);
     showNotification("Invoice finalized.", NotificationVariant.SUCCESS);
     applyReadOnlyState();
-    refreshActionBar();
+    updateActionBarVisibility();
   }
 
   private void revertToDraft() {
@@ -586,7 +572,7 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     currentInvoice = invoiceService.save(currentInvoice);
     showNotification("Invoice reverted to draft — you can now edit it.", NotificationVariant.SUCCESS);
     applyReadOnlyState();
-    refreshActionBar();
+    updateActionBarVisibility();
   }
 
   private void openPreview() {
@@ -599,7 +585,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
   // ── Form helpers ──────────────────────────────────────────────────
   private void collectFormData() {
-    currentInvoice.setInvoiceNumber(invoiceNumberField.getValue());
     currentInvoice.setInvoiceDate(invoiceDatePicker.getValue());
 
     Customer billedCustomer = billedCustomerCombo.getValue();
@@ -634,7 +619,6 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     boolean isFinalized = currentInvoice != null && currentInvoice.getStatus() == InvoiceStatus.FINALIZED;
     if (billedCustomerCombo != null) billedCustomerCombo.setReadOnly(isFinalized);
     if (shippedCustomerCombo != null) shippedCustomerCombo.setReadOnly(isFinalized);
-    if (invoiceNumberField != null) invoiceNumberField.setReadOnly(isFinalized);
     if (invoiceDatePicker != null) invoiceDatePicker.setReadOnly(isFinalized);
     if (transportSelect != null) transportSelect.setEnabled(!isFinalized);
     if (courierNameField != null) courierNameField.setReadOnly(isFinalized);
@@ -642,19 +626,33 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
     if (eWayBillField != null) eWayBillField.setReadOnly(isFinalized);
     if (termsArea != null) termsArea.setReadOnly(isFinalized);
     if (lineGrid != null) lineGrid.setEnabled(!isFinalized);
-    if (saveDraftBtn != null) saveDraftBtn.setVisible(!isFinalized);
-    if (finalizeBtn != null) finalizeBtn.setVisible(!isFinalized);
-    if (revertBtn != null) revertBtn.setVisible(isFinalized);
+    
+    updateActionBarVisibility();
   }
 
-  private void refreshActionBar() {
-    statusBadge.setText(currentInvoice.getStatus().name());
-    statusBadge.getElement().getThemeList().clear();
-    if (currentInvoice.getStatus() == InvoiceStatus.FINALIZED) {
-      statusBadge.addThemeVariants(BadgeVariant.SUCCESS);
+  private void updateActionBarVisibility() {
+    if (currentInvoice.getStatus() != null) {
+      statusBadge.setVisible(true);
+      statusBadge.setText(currentInvoice.getStatus().name());
+      statusBadge.getElement().getThemeList().clear();
+      if (currentInvoice.getStatus() == InvoiceStatus.FINALIZED) {
+        statusBadge.addThemeVariants(BadgeVariant.SUCCESS);
+      } else {
+        statusBadge.addThemeVariants(BadgeVariant.WARNING);
+      }
     } else {
-      statusBadge.addThemeVariants(BadgeVariant.WARNING);
+      statusBadge.setVisible(false);
     }
+
+    boolean isNewInvoice = currentInvoice.getId() == null;
+    boolean hasBilledCustomer = billedCustomerCombo != null && billedCustomerCombo.getValue() != null;
+    boolean hasProducts = lineItemRows != null && lineItemRows.stream().anyMatch(row -> row.getProduct() != null);
+    boolean isDraft = currentInvoice.getStatus() == null || currentInvoice.getStatus() == InvoiceStatus.DRAFT;
+
+    if (saveDraftBtn != null) saveDraftBtn.setVisible(hasBilledCustomer && isDraft);
+    if (finalizeBtn != null) finalizeBtn.setVisible(!isNewInvoice && hasProducts && isDraft);
+    if (previewBtn != null) previewBtn.setVisible(!isNewInvoice && hasProducts);
+    if (revertBtn != null) revertBtn.setVisible(currentInvoice.getStatus() == InvoiceStatus.FINALIZED);
   }
 
   private Customer findCustomerById(Long customerId) {

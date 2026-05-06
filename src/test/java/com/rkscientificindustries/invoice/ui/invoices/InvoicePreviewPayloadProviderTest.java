@@ -28,7 +28,7 @@ class InvoicePreviewPayloadProviderTest {
   void shouldCreatePayloadWithInvoiceNumberFilename() {
     byte[] expected = "%PDF-test".getBytes();
     var invoice = Invoice.builder()
-        .invoiceNumber("INV-123")
+        .invoiceNumber(123L)
         .invoiceDate(LocalDate.now())
         .items(List.of())
         .build();
@@ -45,7 +45,7 @@ class InvoicePreviewPayloadProviderTest {
     var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
 
     verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
-    assertThat(payload.filename()).isEqualTo("invoice-INV-123.pdf");
+    assertThat(payload.filename()).isEqualTo("invoice-123-original.pdf");
     assertThat(payload.pdfBytes()).isEqualTo(expected);
   }
 
@@ -55,7 +55,7 @@ class InvoicePreviewPayloadProviderTest {
     byte[] expected = "%PDF-draft".getBytes();
 
     var invoice = Invoice.builder()
-        .invoiceNumber(" ")
+        .invoiceNumber(null)
         .invoiceDate(LocalDate.now())
         .items(List.of())
         .build();
@@ -73,7 +73,7 @@ class InvoicePreviewPayloadProviderTest {
     var payload = provider.createPayload(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
 
     verify(pdfService).generatePdf(invoice, billed, shipped, List.of(), "TNC", "Original Copy");
-    assertThat(payload.filename()).isEqualTo("invoice-draft.pdf");
+    assertThat(payload.filename()).isEqualTo("invoice-draft-original.pdf");
     assertThat(payload.pdfBytes()).isEqualTo(expected);
   }
 }

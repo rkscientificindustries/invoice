@@ -11,7 +11,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,9 +18,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.rkscientificindustries.invoice.ui.utils.AppConstants.DATE_FMT;
 
@@ -32,8 +28,6 @@ public class InvoiceListView extends VerticalLayout {
   private final CustomerService customerService;
 
   private final Grid<Invoice> grid = new Grid<>(Invoice.class, false);
-  private final Map<Invoice, Integer> rowIndexMap = new HashMap<>();
-  private ListDataProvider<Invoice> dataProvider;
 
   public InvoiceListView(InvoiceService invoiceService, CustomerService customerService) {
     this.invoiceService = invoiceService;
@@ -63,31 +57,17 @@ public class InvoiceListView extends VerticalLayout {
     return toolbar;
   }
 
-  private void updateRowIndices() {
-    rowIndexMap.clear();
-    int index = 1;
-    for (Invoice invoice : dataProvider.getItems()) {
-      rowIndexMap.put(invoice, index++);
-    }
-  }
-
   private Grid<Invoice> buildGrid() {
-    dataProvider = new ListDataProvider<>(invoiceService.findAll());
-    updateRowIndices();
+    ListDataProvider<Invoice> dataProvider = new ListDataProvider<>(invoiceService.findAll());
 
     grid.addThemeVariants(GridVariant.ROW_STRIPES);
     grid.setSizeFull();
 
-    // # index column (uses a pre-built map to avoid per-row DB overhead)
-    grid.addComponentColumn(invoice -> {
-      var index = rowIndexMap.get(invoice);
-      return new Span(index != null ? String.valueOf(index) : "");
-    }).setHeader("#").setFlexGrow(0).setWidth("60px");
-
     grid.addColumn(Invoice::getInvoiceNumber)
         .setHeader("Invoice #")
-        .setSortable(true)
-        .setAutoWidth(true);
+        .setFlexGrow(0)
+        .setAutoWidth(true)
+        .setSortable(true);
 
     grid.addColumn(invoice -> {
       if (invoice.getBilledTo() == null) return "—";

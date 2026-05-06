@@ -5,6 +5,7 @@ import com.rkscientificindustries.invoice.backend.customer.Customer;
 import com.rkscientificindustries.invoice.backend.customer.CustomerRepository;
 import com.rkscientificindustries.invoice.backend.invoice.Invoice;
 import com.rkscientificindustries.invoice.backend.invoice.InvoiceRepository;
+import com.rkscientificindustries.invoice.backend.invoice.InvoiceStatus;
 import com.rkscientificindustries.invoice.backend.invoice.LineItem;
 import com.rkscientificindustries.invoice.backend.product.Product;
 import com.rkscientificindustries.invoice.backend.product.ProductRepository;
@@ -70,9 +71,6 @@ public class InvoiceDataLoader implements DataLoader {
     Customer billedCustomer = customers.get(random.nextInt(customers.size()));
     Customer shippedCustomer = customers.get(random.nextInt(customers.size()));
 
-    // Generate invoice number
-    String invoiceNumber = String.format("INV-%06d", 1000 + index);
-
     // Generate invoice date within last 90 days
     LocalDate invoiceDate = LocalDate.now().minusDays(random.nextInt(90));
 
@@ -101,7 +99,6 @@ public class InvoiceDataLoader implements DataLoader {
       BigDecimal lineTotal = lineSubtotal.add(lineTax);
 
       var lineItem = LineItem.builder()
-//          .lineOrder(lineOrder)
           .productId(product.getId())
           .quantity(quantity)
           .unitPrice(product.getUnitPrice())
@@ -126,7 +123,6 @@ public class InvoiceDataLoader implements DataLoader {
 
     // Build and return invoice
     return Invoice.builder()
-        .invoiceNumber(invoiceNumber)
         .invoiceDate(invoiceDate)
         .billedTo(billedCustomer.getId())
         .shippedTo(shippedCustomer.getId())
@@ -141,6 +137,7 @@ public class InvoiceDataLoader implements DataLoader {
         .discountPercentage(discountPercentage)
         .totalTax(totalTax)
         .totalAmount(totalAmount)
+        .status(InvoiceStatus.DRAFT)
         .build();
   }
 
