@@ -40,9 +40,9 @@ out/
 
 # The following files are generated/updated by vaadin-gradle-plugin
 node_modules/
-webpack.generated.js
-target
-out
+src/main/frontend/generated/
+vite.generated.ts
 pnpmfile.js
 .npmrc
-src/main/frontend/generated
+target
+out
