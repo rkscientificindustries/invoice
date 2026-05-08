@@ -12,8 +12,7 @@ import com.rkscientificindustries.invoice.backend.product.ProductService;
 import com.rkscientificindustries.invoice.ui.MainLayout;
 import com.rkscientificindustries.invoice.ui.utils.AppConstants;
 import com.rkscientificindustries.invoice.ui.utils.InvoiceUtils;
-import com.vaadin.componentfactory.Breadcrumb;
-import com.vaadin.componentfactory.Breadcrumbs;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
@@ -178,12 +177,18 @@ public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
 
   // ── Action bar ─────────────────────────────────────────────────────
   private HorizontalLayout buildActionBar() {
-    var breadcrumbs = new Breadcrumbs();
+    var breadcrumbs = new HorizontalLayout();
     breadcrumbs.addClassName("styled-breadcrumb");
-    breadcrumbs.add(
-        new Breadcrumb("Invoices", "invoices"),
-        new Breadcrumb(currentInvoice.getInvoiceNumber() != null ? String.valueOf(currentInvoice.getInvoiceNumber()) : "New")
-    );
+    breadcrumbs.setAlignItems(FlexComponent.Alignment.CENTER);
+    breadcrumbs.setSpacing(true);
+
+    var invoicesLink = new Anchor("/invoices", "Invoices");
+    var separator = new Span("\u203A"); // ›
+    separator.addClassName("breadcrumb-separator");
+    var current = new Span(currentInvoice.getInvoiceNumber() != null ? String.valueOf(currentInvoice.getInvoiceNumber()) : "New");
+    current.addClassName("breadcrumb-current");
+
+    breadcrumbs.add(invoicesLink, separator, current);
 
     statusBadge = InvoiceUtils.buildStatusBadge(currentInvoice.getStatus());
 

@@ -21,7 +21,6 @@ management:
 
 vaadin:
   launch-browser: false
-  allowed-packages: com.vaadin.componentfactory
 
 admin:
   username: admin

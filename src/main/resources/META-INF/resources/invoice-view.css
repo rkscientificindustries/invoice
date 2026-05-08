@@ -1,8 +1,25 @@
 .invoice-view {
   .styled-breadcrumb {
-    .breadcrumb-anchor {
-      text-decoration: none;
-    }
+    display: flex;
+    gap: var(--vaadin-gap-xs, 0.5rem);
+    align-items: center;
+  }
+
+  .styled-breadcrumb a {
+    text-decoration: none;
+    color: var(--aura-accent-text-color, var(--vaadin-text-color));
+    font-weight: 600;
+    font-size: medium;
+  }
+
+  .styled-breadcrumb .breadcrumb-separator {
+    color: var(--vaadin-text-color-secondary);
+    padding: 0 0.25rem;
+  }
+
+  .styled-breadcrumb .breadcrumb-current {
+    color: var(--vaadin-text-color);
+    font-weight: 600;
   }
 
   .invoice-card {

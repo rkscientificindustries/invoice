@@ -38,7 +38,6 @@ dependencies {
   implementation("org.flywaydb:flyway-database-postgresql")
   implementation("com.vaadin:vaadin-spring-boot-starter")
   implementation("com.github.librepdf:openpdf:3.0.3")
-  implementation("com.vaadin.componentfactory:breadcrumb:4.0.1")
 
   developmentOnly("com.vaadin:vaadin-dev")
   developmentOnly("org.springframework.boot:spring-boot-devtools")
