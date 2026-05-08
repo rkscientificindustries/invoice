@@ -2,7 +2,7 @@ plugins {
   java
   id("org.springframework.boot") version "4.0.5"
   id("io.spring.dependency-management") version "1.1.7"
-  id("com.vaadin") version "25.1.1"
+  id("com.vaadin") version "25.1.5"
 }
 
 group = "com.rkscientificindustries"
@@ -26,7 +26,7 @@ repositories {
   maven("https://maven.vaadin.com/vaadin-addons")
 }
 
-extra["vaadinVersion"] = "25.1.1"
+extra["vaadinVersion"] = "25.1.5"
 extra["springBootVersion"] = "4.0.5"
 
 dependencies {
