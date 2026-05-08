@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,9 +25,17 @@ public class SecurityConfig {
   }
 
   @Bean
+  @Order(1)
+  public SecurityFilterChain staticResourcesFilterChain(HttpSecurity http) {
+    http.securityMatcher("/VAADIN/**", "/*.css", "/**/*.css")
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+    return http.build();
+  }
+
+  @Bean
+  @Order(2)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) {
     http.with(VaadinSecurityConfigurer.vaadin(), configurer -> configurer.loginView(LoginView.class));
-
     return http.build();
   }
 
