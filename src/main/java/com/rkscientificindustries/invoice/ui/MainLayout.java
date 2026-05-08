@@ -51,13 +51,16 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
   }
 
   private void handleLogout() {
+    var ui = UI.getCurrent();
     var logoutHandler = new SecurityContextLogoutHandler();
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     logoutHandler.logout(
         VaadinServletRequest.getCurrent().getHttpServletRequest(),
         VaadinServletResponse.getCurrent().getHttpServletResponse(),
         authentication);
-    UI.getCurrent().navigate("login");
+     if (ui != null) {
+       ui.navigate("login");
+     }
   }
 
   private SideNav getSideNav() {
