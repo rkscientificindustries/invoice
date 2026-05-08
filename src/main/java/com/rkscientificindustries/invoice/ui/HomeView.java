@@ -20,6 +20,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -30,6 +31,7 @@ import static com.rkscientificindustries.invoice.ui.utils.AppConstants.DATE_FMT;
 
 @PageTitle("Dashboard")
 @Route(value = "", layout = MainLayout.class)
+@PermitAll
 public class HomeView extends VerticalLayout {
   private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.of("en", "IN"));
 
@@ -200,4 +202,3 @@ public class HomeView extends VerticalLayout {
     return currencyFormat.format(value != null ? value : BigDecimal.ZERO);
   }
 }
-

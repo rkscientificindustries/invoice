@@ -26,6 +26,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.text.NumberFormat;
@@ -38,6 +39,7 @@ import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotif
 
 @PageTitle("Products")
 @Route(value = "products", layout = MainLayout.class)
+@PermitAll
 public class ProductListView extends MasterDetailLayout {
   private final Grid<Product> grid = new Grid<>(Product.class, false);
   private final ProductService productService;

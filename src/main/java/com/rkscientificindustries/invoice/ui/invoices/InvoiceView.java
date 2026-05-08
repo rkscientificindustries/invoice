@@ -47,6 +47,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParameters;
+import jakarta.annotation.security.PermitAll;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -63,6 +64,7 @@ import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotif
 @PageTitle("Invoice")
 @StyleSheet("invoice-view.css")
 @Route(value = "invoices/details/:invoiceId?", layout = MainLayout.class)
+@PermitAll
 public class InvoiceView extends VerticalLayout implements BeforeEnterObserver {
   // ── Services ─────────────────────────────────────────────────────
   private final InvoiceService invoiceService;

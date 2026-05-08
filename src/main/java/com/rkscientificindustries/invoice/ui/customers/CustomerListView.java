@@ -25,6 +25,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import static com.rkscientificindustries.invoice.ui.utils.InvoiceUtils.showNotif
 
 @PageTitle("Customers")
 @Route(value = "customers", layout = MainLayout.class)
+@PermitAll
 public class CustomerListView extends MasterDetailLayout {
   private final Grid<Customer> grid = new Grid<>(Customer.class, false);
   private final CustomerService customerService;

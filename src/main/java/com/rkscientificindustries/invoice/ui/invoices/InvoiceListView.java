@@ -18,11 +18,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 
 import static com.rkscientificindustries.invoice.ui.utils.AppConstants.DATE_FMT;
 
 @PageTitle("Invoices")
 @Route(value = "invoices", layout = MainLayout.class)
+@PermitAll
 public class InvoiceListView extends VerticalLayout {
   private final InvoiceService invoiceService;
   private final CustomerService customerService;
