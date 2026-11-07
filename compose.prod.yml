@@ -1,10 +1,27 @@
 services:
+  # --- Nginx Proxy Manager ---
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - '80:80'              # Public HTTP
+      - '443:443'            # Public HTTPS
+      - '81:81'              # Admin UI (You can close this later)
+    volumes:
+      - ./npm-data:/data
+      - ./npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - invoice-net
+
+  # --- Your Spring Boot App ---
   app:
     image: ${IMAGE_NAME}
     container_name: invoice-app
     restart: unless-stopped
-    ports:
-      - "80:8080"
+    # Removed "80:8080" because NPM will handle port 80 now
+    expose:
+      - "8080" 
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DB_HOST=db
@@ -16,7 +33,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - invoice-net
 
+  # --- Postgres DB ---
   db:
     image: postgres:18-alpine
     container_name: invoice-db
@@ -26,12 +46,18 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - invoice-data:/var/lib/postgresql/data
+      - invoice-data:/var/lib/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d invoice_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - invoice-net
 
 volumes:
   invoice-data:
+
+networks:
+  invoice-net:
+    driver: bridge

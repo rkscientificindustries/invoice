@@ -1,0 +1,103 @@
+Description of Goods	HSN/SAC
+Code	Unit	Price	Gst
+Beaker 1 Ltr	7017	Nos	295.00	18%
+Beaker 500 ml 	7017	Nos	73.00	18%
+Beaker 250 ml 	7017	Nos	92.00	18%
+Beaker 100 ml 	7017	Nos	54.00	18%
+Beaker 50 ml 	7017	Nos	26.00	18%
+Measuring Cylinder 1000 ml 	7017	Nos	1,023.00	18%
+Measuring Cylinder 500 ml 	7017	Nos	604.00	18%
+Measuring Cylinder 250 ml 	7017	Nos	509.00	18%
+Measuring Cylinder 100 ml 	7017	Nos	318.00	18%
+Measuring Cylinder 50 ml 	7017	Nos	244.00	18%
+Measuring Cylinder 25 ml 	7017	Nos	207.00	18%
+Conical Flask 1000 ml 	7017	Nos	280.00	18%
+Conical Flask 500 ml 	7017	Nos	155.00	18%
+Conical Flask 250 ml 	7017	Nos	112.00	18%
+Conical Flask 100 ml 	7017	Nos	76.00	18%
+Mohr Pipette 1 ml 	7017	Nos	68.00	18%
+Mohr Pipette 2 ml 	7017	Nos	68.00	18%
+Mohr Pipette 5 ml	7017	Nos	68.00	18%
+Mohr Pipette 10 ml	7017	Nos	70.00	18%
+Bulb Pipette 5 ml	7017	Nos	75.00	18%
+Bulb Pipette 10 ml	7017	Nos	87.00	18%
+Bulb Pipette 25 ml	7017	Nos	125.00	18%
+Bulb Pipette 50 ml	7017	Nos	145.00	18%
+Volumetric Flask 1000 ml 	7017	Nos	405.00	18%
+Volumetric Flask 500 ml 	7017	Nos	305.00	18%
+Volumetric Flask 250 ml 	7017	Nos	205.00	18%
+Volumetric Flask 100 ml 	7017	Nos	106.00	18%
+Funnel 100 mm 	7017	Nos	102.00	18%
+Funnel 75 mm 	7017	Nos	72.00	18%
+Funnel 50 mm 	7017	Nos	62.00	18%
+Reagent Bottle 1 Ltr 	7017	Nos	476.00	18%
+Reagent Bottle 500 ml 	7017	Nos	289.00	18%
+Reagent Bottle 250 ml 	7017	Nos	203.00	18%
+Reagent Bottle 100 ml 	7017	Nos	156.00	18%
+RB Flask 1 Ltr 	7017	Nos	352.00	18%
+RB Flask 500 ml 	7017	Nos	156.00	18%
+Burette 25 ml 	7017	Nos	153.00	18%
+Burette 50 ml 	7017	Nos	162.00	18%
+Glass Rod 12 inch	7017	Nos	16.00	18%
+Glass Rod 8 inch	7017	Nos	15.00	18%
+Mercury Thermometer	9025	Nos	235.00	18%
+Petri Dish 150x25 ml 	7017	Nos	395.00	18%
+Test Tube 	7017	Nos	6.00	18%
+Test Tube 	7017	Nos	10.00	18%
+Petri Dish 100 X 15 ml	7017	Nos	145.00	18%
+Silica Crusible 50 ml	7017	Nos	752.00	18%
+Silica Crusible 100 ml	7017	Nos	1,380.00	18%
+Kjeldahl appratus Glass Part (3 Test)	7017	Set	7,925.00	18%
+Beaker 50 ml 	3926	Nos	12.00	18%
+Beaker 100 ml 	3926	Nos	13.50	18%
+Measuring Cylinder 1000 ml 	3926	Nos	175.00	18%
+Measuring Cylinder 500 ml 	3926	Nos	95.00	18%
+Measuring Cylinder 50 ml 	3926	Nos	29.00	18%
+Measuring Cylinder 25 ml 	3926	Nos	24.00	18%
+Volumetric Flask 1000 ml 	3923	Nos	273.00	18%
+Volumetric Flask 500 ml 	3923	Nos	185.00	18%
+Volumetric Flask 250 ml 	3923	Nos	130.00	18%
+Volumetric Flask 100 ml 	3923	Nos	105.00	18%
+Funnel 50 mm 	3926	Nos	6.00	18%
+Funnel 75mm 	3926	Nos	10.00	18%
+Funnel 100 mm 	3926	Nos	22.00	18%
+Powder Funnel 80 mm 	3926	Nos	14.00	18%
+Measuring Jug 1000 ml	3926	Nos	66.00	18%
+Measuring Jug 500 ml	3926	Nos	38.00	18%
+Utility Tray	3926	Nos	395.00	18%
+Stirrer Rod 0-6 Mm X 150 Mm	3926	Nos	6.50	18%
+Stirrer Rod 0-10 Mm X 250 Mm	3926	Nos	14.00	18%
+Porcelain Mortar & Pestle 4 inch	6909	Nos	92.00	18%
+Test tube stand 6 Hole	3923	Nos	60.00	18%
+Sodium Hydroxide Pellets	2815	gm	315.00	18%
+Ethyl Alcohol AR	9802	ml	253.00	18%
+Ammonia Solution LR	2814	ml	1290.00	18%
+Sulphuric Acid LR	2807	Ltr	1350.00	18%
+Stannous Chloride	2827	gm	252.00	18%
+Erichrome Black	3204	gm	298.00	18%
+Sodium Thiosulphate	2832	gm	460.00	18%
+Citric Acid TB Anhydrous	2918	gm	992.00	18%
+Sodium Molybdate	2841	gm	427.00	18%
+Silicagel Self Indicating Coarse Blue	3824	gm	340.00	18%
+Silicon Grease	3910	gm	1955.00	18%
+Potassium Iodide	2827	gm	876.00	18%
+Zinc Metal Dust	7903	gm	206.00	18%
+Sodium Chloride	2501	gm	1024.00	0%
+Potassium Dichromate	2841	gm	575.00	18%
+Potassium Sulphate	2833	gm	549.00	18%
+Potassium Permanganate	2841	gm	324.00	18%
+Hydroxylamine Hydrochloride	2825	gm	709.00	18%
+Copper Sulphate	2833	gm	234.00	18%
+Sodium Sulphate LR	2833	gm	408.00	18%
+Charcoal Activated	3802	gm	1395.00	18%
+Ammonium Molybdate	2841	gm	1390.00	18%
+Ammonium Metavanadate	2841	gm	714.00	18%
+Ferroin Indicator	3822	ml	794.00	5%
+Orthophosphoric Acid	2809	ml	230.00	18%
+Methylene Blue Indicator	3822	ml	166.00	5%
+Methyl Red Indicator	3822	ml	362.00	5%
+Hydrochloric Acid	2806	ml	353.00	18%
+Acetic Acid LR	2915	ml	388.00	18%
+Nitric Acid LR	2808	ml	794.00	5%
+Salicylic Acid	2918	gm	268.00	18%
+Sodium Thiosulphate Pentahydrate	2832	gm	323.00	18%
